@@ -1,0 +1,39 @@
+########################################################################################################################
+# Repo tool base settings
+########################################################################################################################
+
+[repo]
+
+# Use the Kit Template repo configuration as a base. Only override things specific to the repo.
+import_configs = ["${root}/_repo/deps/repo_kit_tools/kit-template/repo.toml"]
+
+# Repository Name
+name = "iot-samples"
+
+[repo_build]
+msbuild.vs_version = "vs2019"
+post_build.commands = []
+
+[repo_docs]
+name = "Kit Extension Template C++"
+project = "iot-samples"
+api_output_directory = "api"
+use_fast_doxygen_conversion=false
+sphinx_version = "4.5.0.2-py3.10-${platform}"
+sphinx_exclude_patterns = [
+    "_build",
+    "tools",
+    "VERSION.md",
+    "source/extensions/*/docs/Overview.md",
+    "source/extensions/*/docs/CHANGELOG.md",
+]
+
+[repo_build.licensing]
+enabled = false
+run_by_default = false
+
+[repo_docs.kit]
+extensions = []
+
+[repo_package.packages."platform:windows-x86_64".docs]
+windows_max_path_length = 0

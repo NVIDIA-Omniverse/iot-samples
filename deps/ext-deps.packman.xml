@@ -1,0 +1,10 @@
+<project toolsVersion="5.0">
+  <!-- Import dependencies from Kit SDK to ensure we're using the same versions. -->
+  <import path="../_build/${platform}/${config}/kit/dev/all-deps.packman.xml">
+    <filter include="nv_usd_py310_release"/>
+  </import>
+
+  <!-- Override the link paths to point to the correct locations. -->
+  <dependency name="nv_usd_py310_release" linkPath="../_build/target-deps/usd/release"/>
+
+</project>
