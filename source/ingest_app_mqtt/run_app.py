@@ -32,16 +32,15 @@ ROOT_DIR = Path(SCRIPT_DIR).resolve().parents[1]
 
 BUILD_DIR = ROOT_DIR.joinpath("_build", args.platform, args.config)
 DEPS_DIR = ROOT_DIR.joinpath("_build", "target-deps")
-APP_DIR = ROOT_DIR.joinpath("app")
-PYTHON_LIB = DEPS_DIR.joinpath("python")
 USD_BIN_DIR = DEPS_DIR.joinpath("usd", args.config, "bin")
 USD_LIB_DIR = DEPS_DIR.joinpath("usd", args.config, "lib")
-CL_LIB_DIR = DEPS_DIR.joinpath("omni_client_library", args.config)
+CLIENT_LIB_DIR = DEPS_DIR.joinpath("omni_client_library", args.config)
+RESOLVER_DIR = DEPS_DIR.joinpath("omni_usd_resolver", args.config)
 
-EXTRA_PATHS = [str(CL_LIB_DIR), str(USD_BIN_DIR), str(USD_LIB_DIR), str(BUILD_DIR), str(PYTHON_LIB)]
+EXTRA_PATHS = [str(CLIENT_LIB_DIR), str(USD_BIN_DIR), str(USD_LIB_DIR), str(BUILD_DIR), str(RESOLVER_DIR)]
 EXTRA_PYTHON_PATHS = [
     str(USD_LIB_DIR.joinpath("python")),
-    str(CL_LIB_DIR.joinpath("bindings-python")),
+    str(CLIENT_LIB_DIR.joinpath("bindings-python")),
     str(BUILD_DIR.joinpath("bindings-python")),
 ]
 
@@ -61,9 +60,9 @@ os.environ["OMNI_PASS"] = args.password
 os.environ["OMNI_HOST"] = args.server
 
 if PLATFORM_SYSTEM == "windows":
-    PYTHON_EXE = APP_DIR.joinpath("kit", "python", "python")
+    PYTHON_EXE = DEPS_DIR.joinpath("python", "python")
 else:
-    PYTHON_EXE = APP_DIR.joinpath("kit" "python", "bin", "python3")
+    PYTHON_EXE = DEPS_DIR.joinpath("python", "bin", "python3")
 
 plugin_paths = DEPS_DIR.joinpath("omni_usd_resolver", args.config, "usd", "omniverse", "resources")
 os.environ["PXR_PLUGINPATH_NAME"] = str(plugin_paths)

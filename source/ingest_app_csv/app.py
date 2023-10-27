@@ -173,5 +173,9 @@ if __name__ == "__main__":
     try:
         stage, live_layer = asyncio.run(initialize_async(IOT_TOPIC))
         run(stage, live_layer, IOT_TOPIC)
+    except:
+        print('---- LOG MESSAGES ---')
+        print(*messages, sep='\n')
+        print('----')
     finally:
         omni.client.shutdown()

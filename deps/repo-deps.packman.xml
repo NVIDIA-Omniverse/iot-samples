@@ -1,26 +1,26 @@
 <project toolsVersion="5.0">
   <dependency name="repo_build" linkPath="../_repo/deps/repo_build">
-    <package name="repo_build" version="0.43.4" checksum="1be846e02edfc9d8590c767cf6daf722cd438ad0d1fe7c5a4ff3b8ef8a89687c" />
+    <package name="repo_build" version="0.54.1" />
   </dependency>
   <dependency name="repo_changelog" linkPath="../_repo/deps/repo_changelog">
-    <package name="repo_changelog" version="0.3.2" checksum="fbe4bc4257d5aec1c964f2616257043095a9dfac8a10e027ac96aa89340f1423" />
+    <package name="repo_changelog" version="0.3.20" />
   </dependency>
   <dependency name="repo_docs" linkPath="../_repo/deps/repo_docs">
-    <package name="repo_docs" version="0.34.0" checksum="6b3178e7f7651f837eb77c8b50a21891851f49ddc375f4686a64ace96397bbb7" />
+    <package name="repo_docs" version="0.40.2" />
   </dependency>
   <dependency name="repo_kit_tools" linkPath="../_repo/deps/repo_kit_tools">
-    <package name="repo_kit_tools" version="0.11.9" checksum="f1057bd05f60abd4a3dfb7f82e0364e16b68885e1ea498c9b24a9ff024266b8b" />
+    <package name="repo_kit_tools" version="0.13.52" />
   </dependency>
   <dependency name="repo_man" linkPath="../_repo/deps/repo_man">
-    <package name="repo_man" version="1.36.0" checksum="f81c449eb6fb0cf16e46554eef11fe6cc45b999feb4da062570c3e5ec40e2f1d" />
+    <package name="repo_man" version="1.46.5" />
   </dependency>
   <dependency name="repo_package" linkPath="../_repo/deps/repo_package">
-    <package name="repo_package" version="5.8.8" checksum="b8279d841f7201b44d9b232b934960d9a302367be59ee64e976345854b741fec" />
+    <package name="repo_package" version="5.9.3" />
   </dependency>
   <dependency name="repo_format" linkPath="../_repo/deps/repo_format">
-    <package name="repo_format" version="2.7.0" checksum="8083eb423043de585dfdfd3cf7637d7e50ba2a297abb8bebcaef4307b80503bb" />
+    <package name="repo_format" version="2.8.0" />
   </dependency>
   <dependency name="repo_source" linkPath="../_repo/deps/repo_source">
-    <package name="repo_source" version="0.4.2" checksum="05776a984978d84611cb8becd5ed9c26137434e0abff6e3076f36ab354313423" />
+    <package name="repo_source" version="0.4.3" />
   </dependency>
 </project>

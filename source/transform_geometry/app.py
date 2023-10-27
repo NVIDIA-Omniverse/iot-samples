@@ -177,5 +177,9 @@ if __name__ == "__main__":
     try:
         stage, live_layer = asyncio.run(initialize_async())
         run(stage, live_layer)
+    except:
+        print('---- LOG MESSAGES ---')
+        print(*messages, sep='\n')
+        print('----')
     finally:
         omni.client.shutdown()

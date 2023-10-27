@@ -3,10 +3,12 @@
   <import path="../_build/${platform}/${config}/kit/dev/all-deps.packman.xml">
     <filter include="omni_usd_resolver" />
     <filter include="omni_client_library" />
+    <filter include="python" />
   </import>
 
   <!-- Override the link paths to point to the correct locations. -->
   <dependency name="omni_usd_resolver" linkPath="../_build/target-deps/omni_usd_resolver" />
   <dependency name="omni_client_library" linkPath="../_build/target-deps/omni_client_library" />
+  <dependency name="python" linkPath="../_build/target-deps/python" />
 
 </project>
