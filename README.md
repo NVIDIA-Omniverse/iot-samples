@@ -1,8 +1,25 @@
 # IoT Samples (Beta)
 
+# [Table of Contents](#tableofcontents)
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+    - [App Link Setup](#app-link-setup)
+- [Headless Connector](#headless-connector)
+    - [CSV Ingest Application](#csv-ingest-application)
+    - [MQTT Ingest Application](#mqtt-ingest-application)
+    - [Containerize Headless Connector](#containerize-headless-connector)
+- [Consuming IoT data in USD](#consuming-iot-data-in-usd)
+    - [Using an Extension](#using-an-extension)
+    - [Using Action Graph](#using-actiongraph)
+    - [Direct to USD from headless connector](#direct-to-usd-from-headless-connector)
+
+# Overview
 Developers can build their own IoT solutions for Omniverse by following the guidelines set out in these samples.
 
-IoT Samples walks through how-to:
+IoT Samples guides you on how-to:
 
 - Connect IoT data sources (CSV, message broker etc.) to Omniverse
 - Incorporate IoT data in the USD model
@@ -19,39 +36,42 @@ The project is broken down into the following folders:
 - *source* - It is a folder that contains the Omniverse stand-alone python client applications.
 - *tools* - It is a folder that contains the utility code for building and packaging Omniverse native C++ client applications,
 
-Open this folder using Visual Studio Code. It will suggest you to install few extensions that will make python experience better.
+Open `~/github/iot-samples` folder using Visual Studio Code. It will suggest you to install few extensions that will make python experience better in Visual Studio Code.
 
 # Architecture
 
 ![Connector Architecture](content/docs/architecture.jpg?raw=true)
 
-The architecture decouples the IoT data model from the presentation in Omniverse, allowing for a data driven approach and separation of concerns that is similar to a Model/View/Controller (MVC) design pattern. The diagram above illustrates the key components to a solution. These are:
-- *Customer Domain* - represents the data sources.
-- *Connector* - is an stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex. The CSV sample transits the data *as is* from source to destination, whereas the Geometry sample manipulates USD geometry directly. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
-    - *USD Resolver* - is a package dependency with the libraries for USD and Omniverse. [Find out more about the Omniverse USD Resolver](https://docs.omniverse.nvidia.com/kit/docs/usd_resolver/latest/index.html)
-- *Nucleus* - is Omniverse's distributed file system agent that runs locally, in the cloud, or at the enterprise level. [Find out more about the Omniverse Nucleus](https://docs.omniverse.nvidia.com/nucleus/latest/index.html)
-- *Consumer* - is an application that can manipulate and present the IoT data served by a Connector.
-    - *USD Resolver* - is a package dependency with the libraries for USD and Omniverse.
-    - *Fabric* -  is Omniverse's sub-system for scalable, realtime communication and update of the scene graph amongst software components, the CPU and GPU, and machines across the network.
-    - *Controller* - implements application or presentation logic by manipulating the flow of data from the Connector.
-        - *ActionGraph/OmniGraph* - is a visual scripting language that provides the ability to implement dynamic logic in response to changes made by the Connector. [Find out more about the OmniGraph Action Graph](https://docs.omniverse.nvidia.com/extensions/latest/ext_omnigraph/tutorials/quickstart.html).
-        - *Omniverse Extension* - is a building block within Omniverse for extending application functionality. Extensions can implement any logic required to meet an application's functional requirements. [Find out more about the Omniverse Extensions](https://docs.omniverse.nvidia.com/extensions/latest/overview.html).
-    - *USD Stage* - is an organized hierarchy of prims (primitives) with properties. It provides a pipeline for composing and rendering the hierarchy. It is analogous to the Presentation Layer in MVC while additionally adapting to the data and runtime configuration.
+The architecture decouples the IoT data model from the presentation in Omniverse, allowing for a data driven approach and separation of concerns that is similar to a [Model/View/Controller (MVC) design pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). The diagram above illustrates the key components to a solution. These are:
+- **Customer Domain** - represents the data sources. Industrial IoT deployments require connecting operational technology (OT) systems, such as SCADA, PLC, to information technology (IT) systems to enable various use cases to improve efficiency, productivity, and safety in various industries. These deployments provide a data ingestion endpoint to connect OT data to IT and cloud applications. Some of the widely adopted methods for connecting OT data include MQTT and Kafka. Our samples use CSV and MQTT as example data sources, but you can develop your IoT project with any other connectivity method.
+
+- **Connector** - is a stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex. The CSV sample transits the data *as is* from source to destination, whereas the Geometry sample manipulates USD geometry directly. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
+    - **USD Resolver** - is a package dependency with the libraries for USD and Omniverse. [Find out more about the Omniverse USD Resolver](https://docs.omniverse.nvidia.com/kit/docs/usd_resolver/latest/index.html)
+- **Nucleus** - is Omniverse's distributed file system agent that runs locally, in the cloud, or at the enterprise level. [Find out more about the Omniverse Nucleus](https://docs.omniverse.nvidia.com/nucleus/latest/index.html)
+- **Consumer** - is an application that can manipulate and present the IoT data served by a Connector.
+    - **USD Resolver** - is a package dependency with the libraries for USD and Omniverse.
+    - **Fabric** -  is Omniverse's sub-system for scalable, realtime communication and update of the scene graph amongst software components, the CPU and GPU, and machines across the network. [Find out more about the Omniverse Fabric](https://docs.omniverse.nvidia.com/kit/docs/usdrt/latest/docs/usd_fabric_usdrt.html)
+- **Controller** - implements application or presentation logic by manipulating the flow of data from the Connector.
+    - **ActionGraph/OmniGraph** - is a visual scripting language that provides the ability to implement dynamic logic in response to changes made by the Connector. [Find out more about the OmniGraph Action Graph](https://docs.omniverse.nvidia.com/kit/docs/omni.graph.docs/latest/concepts/ActionGraph.html).
+    - **Omniverse Extension** - is a building block within Omniverse for extending application functionality. Extensions can implement any logic required to meet an application's functional requirements. [Find out more about the Omniverse Extensions](https://docs.omniverse.nvidia.com/extensions/latest/overview.html).
+    - **USD Stage** - is an organized hierarchy of prims (primitives) with properties. It provides a pipeline for composing and rendering the hierarchy. It is analogous to the Presentation Layer in MVC while additionally adapting to the data and runtime configuration.
 
 Note: Connectors implement a producer/consumer pattern that is not mutually exclusive. Connectors are free to act as producer, consumer, or both. There may also be multiple Connectors and Consumers simultaneously collaborating.
 
 # Prerequisites
-Before running any of the application a number of prerequisites are required.
+Before running any of the installation a number of prerequisites are required.
 
-Install Omniverse dependencies. Follow the [Getting Started with Omniverse ](https://www.nvidia.com/en-us/omniverse/download/) to install the latest Omniverse version.
+Follow the [Getting Started with Omniverse ](https://www.nvidia.com/en-us/omniverse/download/) to install the latest Omniverse version.
 
 If you've already installed Omniverse, ensure you have updated to the latest
 
-* Kit 105
-* USD Composer 2023.2.0
-* Nucleus 2023.1
+* Kit 105.1 or greater
+* USD Composer 2023.2.0 or greater
+* Nucleus 2023.1 or greater
 
-Once you have the latest Omniverse dependencies installed, please run the following:
+# Installation
+
+Once you have the latest Omniverse prerequisites installed, please run the following to install the needed Omniverse USD resolver, Omni client, and related dependencies.
 
 ```
 Windows
@@ -62,7 +82,7 @@ Linux
 > ./install.sh
 ```
 
-# App Link Setup
+### App Link Setup
 
 If `app` folder link doesn't exist or becomes broken it can be recreated. For a better developer experience it is recommended to create a folder link named `app` to the *Omniverse Kit* app installed from *Omniverse Launcher*. A convenience script to use is included.
 
@@ -95,14 +115,21 @@ You can also pass an explicit path to the Omniverse Kit app:
 
 ```
 Windows
-> link_app.bat --path "%USERPROFILE%/AppData/Local/ov/pkg/create-2023.3.3"
+> link_app.bat --path "%USERPROFILE%/AppData/Local/ov/pkg/create-2023.2.0"
 ```
 ```
 Linux
-> ./link_app.sh --path "~/.local/share/ov/pkg/create-2022.3.3"
+> ./link_app.sh --path "~/.local/share/ov/pkg/create-2023.2.0"
 ```
 
-# CSV Ingest Application
+# Headless Connector
+
+Headless connector is a stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex.
+
+We have 2 sample headless application - CSV and MQTT - that transits the data as is from source to destination, whereas the Geometry sample manipulates USD geometry directly. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
+
+### CSV Ingest Application
+
 To execute the application run the following:
 ```
 > python source/ingest_app_csv/run_app.py
@@ -110,6 +137,8 @@ To execute the application run the following:
     -p <password>
     -s <nucleus server> (optional default: localhost)
 ```
+
+Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
 
 You should see output resembling:
 ```
@@ -138,13 +167,13 @@ The CSV ingest application can be found in the `source/ingest_app_csv` folder. I
     - Sleep for the the duration of delta between the previous and current `TimeStamp`.
 
 
-If you open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` in `USD Composer` or `Kit` then you should see the following:
+In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` then you should see the following:
 
 ![open settings](content/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the the data being pushed by the Python application.
 
-# MQTT Ingest Application
+### MQTT Ingest Application
 
 To execute the application run the the following:
 ```
@@ -153,6 +182,8 @@ To execute the application run the the following:
     -p <password>
     -s <nucleus server> (optional default: localhost)
 ```
+
+Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
 
 You should see output resembling:
 ```
@@ -195,76 +226,33 @@ The MQTT ingest application can be found in the `source/ingest_app_mqtt` folder.
 
 
 
-If you open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` in `'USD Composer'` or `Kit` then you should see the following:
+In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` then you should see the following:
 
 ![open settings](content/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the data being pushed by the python application
 
-# Action Graph
+### Containerize headless connector
+The following is a simple example of how to deploy a headless connector application into Docker Desktop for Windows. Steps assume the use of
 
-The `ConveyorBelt_A08_PR_NVD_01.usd` contains a simple `ActionGraph` that reads, formats, and displays an attribute from the IoT prim in the ViewPort (see [Omniverse Extensions Viewport](https://docs.omniverse.nvidia.com/extensions/latest/ext_viewport.html)).
+- WSL (comes standard with Docker Desktop install) and
+- Ubuntu Linux as the default OS.
 
-To access the graph:
-- Select the `Window/Visual Scripting/Action Graph` menu
-- Select `Edit Action Graph`
-- Select `/World/ActionGraph`
+Following has to be done in **WSL environment** and *NOT* in Windows environment. Make sure you are in WSL environment, else you may encounter build and dependency errors.
 
-You should see the following:
-
-![action graph](content/docs/action_graph.png?raw=true)
-
-The Graph performs the following:
-- Reads the `_ts` attribute from the `/iot/A08_PR_NVD_01` prim.
-- Converts the numerical value to a string.
-- Prepends the string with `TimeStamp: `.
-- Displays the result on the ViewPort.
-
-
-# Transformation Geometry Application
-
-To execute the application run the the following:
-```
-> python source/transform_geometry/run_app.py
-    -u <user name>
-    -p <password>
-    -s <nucleus server> (optional default: localhost)
-```
-
-
-The sample geometry transformation application can be found in `source\transform_geometry`. It will perform the following:
-- Initialize the stage
-    - Open a connection to Nucleus.
-    - Open or Create the USD stage `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd`.
-    - Add a `.live` layer to the stage if it does not already exist.
-    - Create a `prim` in the `.live` layer at path `/World`.
-    - Create a `Cube` at path `/World/cube`.
-        - Add a `Rotation`.
-    - Create a `Mesh` at path `/World/cube/mesh`.
-- Playback in real-time
-    - Loop for 20 seconds at 30 frames per second.
-    - Randomly rotate the `Cube` along the X, Y, and Z planes.
-
-
-If you open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
-
-![Rotating Cubes](content/docs/cubes.png)
-
-# Containerize the headless IoT connector application
-The following is a simple example of how to deploy a headless IoT connector application into Docker Desktop for Windows. Steps assume the use of WSL (comes standard with Docker Desktop install) and Ubuntu Linux as the default OS.
-
-- Note, if you have an earlier version of the repo cloned, you may want to delete the old repo in WSL and start with a new cloned repo in WSL. Else you could end up with file mismatches and related errors.
+- If you have an earlier version of the repo cloned, you may want to delete the old repo in WSL and start with a new cloned repo in WSL. Else you could end up with file mismatches and related errors.
 
 - Before you clone the repo, ensure you have Git LFS installed and enabled. [Find out more about Git LFS](https://git-lfs.com/)
 
-- Once you have a new repo cloned, run
+- Clone a new repo from **within WSL**
+
+Once you have a new repo cloned, from within WSL run.
 
 ```
-In WSL
 > ./install.sh
 ```
 
-- Share the Nucleus services using a web browser by navigating to http://localhost:3080/. Click on 'Enable Sharing'
+- Share the Nucleus services using a web browser by navigating to http://localhost:3080/. Click on 'Enable Sharing'. This will enable access to  Nucleus services from WSL.
 
     ![Sharing Nucleus services](content/docs/sharing.png)
 
@@ -286,7 +274,7 @@ In WSL
 
     ...
     ```
-- Open a Bash prompt in WSL and navigate to the source repo and launch Visual Studio Code (example: `~/github/iot-samples/`). Make sure you're launching the Visual Studio Code from WSL and *not* editing the DockerFile from within Windows
+- Open a Bash prompt in **WSL** and navigate to the source repo and launch Visual Studio Code (example: `~/github/iot-samples/`). Make sure you're launching the Visual Studio Code from **WSL environment** and *not* editing the DockerFile from within Windows
     ```bash
     code .
     ```
@@ -330,11 +318,23 @@ In WSL
 
     ![open settings](content/docs/docker_logs.png?raw=true)
 
-# Omniverse IoT Extension
+
+# Consuming IoT data in USD
+
+Consume the IoT data served by a connector by building your own application logic to visualize, animate and transform with USD stage. The application logic could use one of the following approaches or all of them;
+
+- Extension
+- Action Graph
+- Direct to USD from headless connector
+
+### Using an Extension
 
 The sample IoT Extension uses Omniverse Extensions, which are the core building blocks of Omniverse Kit-based applications.
 
-The IoT extension leverages the Omniverse UI Framework to display the IoT data as a panel. [Find out more about the Omniverse UI Framework](https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html)
+The IoT Extension demonstrates;
+
+1. Visualizing IoT data
+2. Animating a USD stage using IoT data
 
 To enable the IoT Extension in USD Composer or Kit, do the following:
 
@@ -346,19 +346,25 @@ Open the Extensions panel by clicking on **Window** > **Extensions** in the menu
 
 ![enabling extension](content/docs/enabling_iot_panel_extension.png?raw=true)
 
+1. **Visualizing IoT data**
+
+The IoT Extension leverages the Omniverse UI Framework to visualize the IoT data as a panel. [Find out more about the Omniverse UI Framework](https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html)
+
 
 Once you have enabled the IoT extension, you should see IoT data visualized in a Panel.
+
+![iot panel](content/docs/iot_panel.png?raw=true)
 
 Alternatively, you can launch your app from the console with this folder added to search path and your extension enabled, e.g.:
 
 ```
 > app\omni.code.bat --ext-folder exts --enable omni.iot.sample.panel
 ```
-## Animating USD Stage with IoT data
+2. **Animating a USD stage using IoT data**
 
-Open
+In `'USD Composer'` or `Kit`,
 
-`omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` in `'USD Composer'` or `Kit`.
+open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd`.
 
 Ensure the IoT Extension is enabled.
 
@@ -382,19 +388,62 @@ and then run one of the following
         -p <password>
         -s <nucleus server> (optional default: localhost)
 ```
+Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
 
  You will see the following animation with the cube moving:
 
-![open settings](content/docs/animation_playing.png?raw=true)
+![animation playing](content/docs/animation_playing.png?raw=true)
 
 When the IoT velocity value changes, the extension will animate the rollers (`LiveRoller` class) as well as the cube (`LiveCube` class).
 
-## Sharing Your Extensions
 
-This folder is ready to be pushed to any Git repository. Once pushed, the direct link to the Git repository can be added to the Omniverse Kit extension search paths.
+### Using ActionGraph
 
-A link might look like this: `git://github.com/[user]/[your_repo].git?branch=main&dir=exts`
+The `ConveyorBelt_A08_PR_NVD_01.usd` contains a simple `ActionGraph` that reads, formats, and displays an attribute from the IoT prim in the ViewPort (see [Omniverse Extensions Viewport](https://docs.omniverse.nvidia.com/extensions/latest/ext_viewport.html)).
 
-Notice that `exts` is directory in the repository containing extensions. More information can be found in "Git URL as Extension Search Paths" section of developers manual.
+To access the graph:
+- Select the `Window/Visual Scripting/Action Graph` menu
+- Select `Edit Action Graph`
+- Select `/World/ActionGraph`
 
-To add a link to your *Omniverse Kit* based app go into: Extension Manager -> Gear Icon -> Extension Search Path
+You should see the following:
+
+![action graph](content/docs/action_graph.png?raw=true)
+
+The Graph performs the following:
+- Reads the `_ts` attribute from the `/iot/A08_PR_NVD_01` prim.
+- Converts the numerical value to a string.
+- Prepends the string with `TimeStamp: `.
+- Displays the result on the ViewPort.
+
+
+### Direct to USD from headless Connector
+
+Sample demonstrates how to execute USD tranformations from a headless connector using arbtriary values.
+
+To execute the application run the the following:
+```
+> python source/transform_geometry/run_app.py
+    -u <user name>
+    -p <password>
+    -s <nucleus server> (optional default: localhost)
+```
+Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
+
+The sample geometry transformation application can be found in `source\transform_geometry`. It will perform the following:
+- Initialize the stage
+    - Open a connection to Nucleus.
+    - Open or Create the USD stage `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd`.
+    - Add a `.live` layer to the stage if it does not already exist.
+    - Create a `prim` in the `.live` layer at path `/World`.
+    - Create a `Cube` at path `/World/cube`.
+        - Add a `Rotation`.
+    - Create a `Mesh` at path `/World/cube/mesh`.
+- Playback in real-time
+    - Loop for 20 seconds at 30 frames per second.
+    - Randomly rotate the `Cube` along the X, Y, and Z planes.
+
+
+If you open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
+
+![Rotating Cubes](content/docs/cubes.png)
