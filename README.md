@@ -24,28 +24,28 @@ IoT Samples guides you on how-to:
 - Connect IoT data sources (CSV, message broker etc.) to Omniverse
 - Incorporate IoT data in the USD model
 - Visualize IoT data, using an OmniUI extension
-- Perform USD transformations of USD geometry using IoT data
+- Perform transformations of USD geometry using IoT data
 - Incorporate Omniverse OmniGraph/ActionGraph with IoT data
 
-The project is broken down into the following folders:
+The repository is broken down into the following folders:
 
-- *app* - It is a folder link to the location of your *Omniverse Kit* based app. Note: This folder **does not exist** when the repo is first cloned. You must follow the instruction for configuring the folder which is found here: [App Link Setup](#app-link-setup).
-- *content* - It is a folder that contains data used by the samples.
-- *deps* - It is a folder that has the packman dependencies for the stand-alone data ingestion applications.
-- *exts* - It is a folder where you can add new extensions.
-- *source* - It is a folder that contains the Omniverse stand-alone python client applications.
-- *tools* - It is a folder that contains the utility code for building and packaging Omniverse native C++ client applications,
+- *app* - Is a symlink to the *Omniverse Kit* based app. Note: This folder **does not exist** when the repo is first cloned. You must follow the instruction for configuring the folder which is found here: [App Link Setup](#app-link-setup).
+- *content* - Contains the content data used by the samples.
+- *deps* - Contains the packman dependencies required for the stand-alone data ingestion applications.
+- *exts* - Contains the sample Omniverse extension.
+- *source* - Contains the stand-alone python sample applications for ingesting and manipulating a USD stage with a headless connector.
+- *tools* - Contains the utility code for building and packaging Omniverse native C++ client applications,
 
-Open `~/github/iot-samples` folder using Visual Studio Code. It will suggest you to install few extensions that will make python experience better in Visual Studio Code.
+When opening the `iot-samples` folder in Visual Studio Code, you will be promted to install a number of extensions that will enhance the python experience in Visual Studio Code.
 
 # Architecture
 
 ![Connector Architecture](content/docs/architecture.jpg?raw=true)
 
 The architecture decouples the IoT data model from the presentation in Omniverse, allowing for a data driven approach and separation of concerns that is similar to a [Model/View/Controller (MVC) design pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). The diagram above illustrates the key components to a solution. These are:
-- **Customer Domain** - represents the data sources. Industrial IoT deployments require connecting operational technology (OT) systems, such as SCADA, PLC, to information technology (IT) systems to enable various use cases to improve efficiency, productivity, and safety in various industries. These deployments provide a data ingestion endpoint to connect OT data to IT and cloud applications. Some of the widely adopted methods for connecting OT data include MQTT and Kafka. Our samples use CSV and MQTT as example data sources, but you can develop your IoT project with any other connectivity method.
+- **Customer Domain** - represents the data sources. Industrial IoT deployments require connecting operational technology (OT) systems, such as SCADA, PLC, to information technology (IT) systems to enable various use cases to improve efficiency, productivity, and safety in various industries. These deployments provide a data ingestion endpoint to connect OT data to IT and cloud applications. Some of the widely adopted methods for connecting OT data include MQTT and Kafka. The samples in this repository use CSV and MQTT as data sources, but you can develop your IoT project with any other connectivity method.
 
-- **Connector** - is a stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex. The CSV sample transits the data *as is* from source to destination, whereas the Geometry sample manipulates USD geometry directly. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
+- **Connector** - is a stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex. The [CSV Ingest Application](#csv-ingest-application) and [MQTT Ingest Application](#mqtt-ingest-application) transits the data *as is* from source to destination, whereas the [Geometry Transformation Application](#direct-to-usd-from-headless-connector) manipulates USD geometry directly. Depending on the use cases, the connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
     - **USD Resolver** - is a package dependency with the libraries for USD and Omniverse. [Find out more about the Omniverse USD Resolver](https://docs.omniverse.nvidia.com/kit/docs/usd_resolver/latest/index.html)
 - **Nucleus** - is Omniverse's distributed file system agent that runs locally, in the cloud, or at the enterprise level. [Find out more about the Omniverse Nucleus](https://docs.omniverse.nvidia.com/nucleus/latest/index.html)
 - **Consumer** - is an application that can manipulate and present the IoT data served by a Connector.
@@ -124,9 +124,9 @@ Linux
 
 # Headless Connector
 
-Headless connector is a stand-alone application that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex.
+Headless connectos are stand-alone applications that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex.
 
-We have 2 sample headless application - CSV and MQTT - that transits the data as is from source to destination, whereas the Geometry sample manipulates USD geometry directly. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
+There are two sample connector applications - [CSV Ingest Application](#csv-ingest-application) and [MQTT Ingest Application](#mqtt-ingest-application) - that transits the data as is from source to destination, whereas the [Geometry Transformation Application](#direct-to-usd-from-headless-connector) manipulates USD geometry directly in the connector. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
 
 ### CSV Ingest Application
 
@@ -154,22 +154,32 @@ You should see output resembling:
 2023-09-19 20:35:44+00:00
 ```
 
-The CSV ingest application can be found in the `source/ingest_app_csv` folder. It will perform the following:
+The CSV ingest application can be found in the `./source/ingest_app_csv` folder. It will perform the following:
 - Initialize the stage
     - Open a connection to Nucleus.
-    - Copy `content/ConveyorBelt_A08_PR_NVD_01.usd` to `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/` if it does not already exist.
-    - Add a `.live` layer to the stage if it does not already exist.
-    - Create a `prim` in the `.live` layer at path `/iot/A08_PR_NVD_01` and populate it with attributes that correspond to the unique field `Id` types in the CSV file `content/A08_PR_NVD_01_iot_data.csv`.
+    - Copy `./content/ConveyorBelt_A08_PR_NVD_01` to `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01` if it does not already exist.Note that you can safely delete the destination folder in Nucleus and it will be recreated the next time the connector is run.
+    - Create or join a Live Collaboration Session named `iot_session`.
+    - Create a `prim` in the `.live` layer at path `/iot/A08_PR_NVD_01` and populate it with attributes that correspond to the unique field `Id` types in the CSV file `./content/A08_PR_NVD_01_iot_data.csv`.
 - Playback in real-time
-    - Open and parse `content/A08_PR_NVD_01_iot_data.csv`, and group the contents by `TimeStamp`.
+    - Open and parse `./content/A08_PR_NVD_01_iot_data.csv`, and group the contents by `TimeStamp`.
     - Loop through the data groupings.
     - Update the prim attribute corresponding to the field `Id`.
     - Sleep for the the duration of delta between the previous and current `TimeStamp`.
 
 
-In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` then you should see the following:
+In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session.
 
-![open settings](content/docs/stage_001.png?raw=true)
+Here's how-to join a live collaboration session. Click on `Join Session`
+
+![join session](content/docs/join_session.png)
+
+Select `iot-session` from the drop down to join the already created live session.
+
+![joint iot session](content/docs/join_iot_session.png)
+
+Once you have joined the `iot_session`, then you should see the following:
+
+![iot data in usd](content/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the the data being pushed by the Python application.
 
@@ -208,16 +218,16 @@ Received `{
 ```
 
 
-The MQTT ingest application can be found in the `source/ingest_app_mqtt` folder. It will perform the following:
+The MQTT ingest application can be found in the `./source/ingest_app_mqtt` folder. It will perform the following:
 - Initialize the stage
     - Open a connection to Nucleus.
-    - Copy `content/ConveyorBelt_A08_PR_NVD_01.usd` to `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/` if it does not already exist.
-    - Add a `.live` layer to the stage if it does not already exist.
-    - Create a `prim` in the `.live` layer at path `/iot/A08_PR_NVD_01` and populate it with attributes that correspond to the unique field `Id` types in the CSV file `content/A08_PR_NVD_01_iot_data.csv`.
+    - Copy `./content/ConveyorBelt_A08_PR_NVD_01` to `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01` if it does not already exist. Note that you can safely delete the destination folder in Nucleus and it will be recreated the next time the connector is run.
+    - Create or join a Live Collaboration Session named `iot_session`.
+    - Create a `prim` in the `.live` layer at path `/iot/A08_PR_NVD_01` and populate it with attributes that correspond to the unique field `Id` types in the CSV file `./content/A08_PR_NVD_01_iot_data.csv`.
 - Playback in real-time
     - Connect to MQTT and subscribe to MQTT topic `iot/{A08_PR_NVD_01}`
     - Dispatch data to MQTT
-        - Open and parse `content/A08_PR_NVD_01_iot_data.csv`, and group the contents by `TimeStamp`.
+        - Open and parse `./content/A08_PR_NVD_01_iot_data.csv`, and group the contents by `TimeStamp`.
         - Loop through the data groupings.
         - Publish data to the MQTT topic.
         - Sleep for the the duration of delta between the previous and current `TimeStamp`.
@@ -226,19 +236,30 @@ The MQTT ingest application can be found in the `source/ingest_app_mqtt` folder.
 
 
 
-In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd` then you should see the following:
+In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session.
 
-![open settings](content/docs/stage_001.png?raw=true)
+Here's how-to join a live collaboration session. Click on `Join Session`
+
+![join session](content/docs/join_session.png)
+
+Select `iot-session` from the drop down to join the already created live session.
+
+![joint iot session](content/docs/join_iot_session.png)
+
+Once you have joined the `iot_session`, then you should see the following:
+
+
+![iot data in usd](content/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the data being pushed by the python application
 
 ### Containerize headless connector
 The following is a simple example of how to deploy a headless connector application into Docker Desktop for Windows. Steps assume the use of
 
-- WSL (comes standard with Docker Desktop install) and
+- WSL (comes standard with Docker Desktop installation) and
 - Ubuntu Linux as the default OS.
 
-Following has to be done in **WSL environment** and *NOT* in Windows environment. Make sure you are in WSL environment, else you may encounter build and dependency errors.
+The ollowing has to be done in **WSL environment** and *NOT* in Windows environment. Make sure you are in WSL, else you may encounter build and dependency errors.
 
 - If you have an earlier version of the repo cloned, you may want to delete the old repo in WSL and start with a new cloned repo in WSL. Else you could end up with file mismatches and related errors.
 
@@ -256,7 +277,7 @@ Once you have a new repo cloned, from within WSL run.
 
     ![Sharing Nucleus services](content/docs/sharing.png)
 
-- Record the *WSL IP address* of the host machine for use by the application container.
+- Record the *WSL IP address* of the host machine for use by the container application.
     ```
     PS C:\> ipconfig
 
@@ -278,7 +299,7 @@ Once you have a new repo cloned, from within WSL run.
     ```bash
     code .
     ```
-- Modify the DockerFile `ENTRYPOINT` to add the WSL IP address to connect to the Host's Nucleus Server. Also, include the username and password for your Omniverse instance.
+- Modify the DockerFile `ENTRYPOINT` to add the WSL IP address to connect to the Host's Nucleus Server. Also, include the username and password for your Omniverse Nucleus instance.
 
     ```docker
     # For more information, please refer to https://aka.ms/vscode-docker-python
@@ -364,7 +385,7 @@ Alternatively, you can launch your app from the console with this folder added t
 
 In `'USD Composer'` or `Kit`,
 
-open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/ConveyorBelt_A08_PR_NVD_01.usd`.
+open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd`.
 
 Ensure the IoT Extension is enabled.
 
@@ -388,7 +409,7 @@ and then run one of the following
         -p <password>
         -s <nucleus server> (optional default: localhost)
 ```
-Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
+Username and password are for the target Nucleus instance (running on local workstation or on cloud) that you will be connecting to for your IoT projects.
 
  You will see the following animation with the cube moving:
 
@@ -417,7 +438,7 @@ The Graph performs the following:
 - Displays the result on the ViewPort.
 
 
-### Direct to USD from headless Connector
+### Direct to USD from Headless Connector
 
 Sample demonstrates how to execute USD tranformations from a headless connector using arbtriary values.
 
@@ -433,8 +454,8 @@ Username and password are of the Nucleus instance (running on local workstation 
 The sample geometry transformation application can be found in `source\transform_geometry`. It will perform the following:
 - Initialize the stage
     - Open a connection to Nucleus.
-    - Open or Create the USD stage `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd`.
-    - Add a `.live` layer to the stage if it does not already exist.
+    - Open or Create the USD stage `omniverse://<nucleus server>/users/<user name>/iot-samples/Dancing_Cubes.usd`.
+    - Create or join a Live Collaboration Session named `iot_session`.
     - Create a `prim` in the `.live` layer at path `/World`.
     - Create a `Cube` at path `/World/cube`.
         - Add a `Rotation`.
@@ -444,6 +465,6 @@ The sample geometry transformation application can be found in `source\transform
     - Randomly rotate the `Cube` along the X, Y, and Z planes.
 
 
-If you open `omniverse://<nucleus server>/Projects/IoT/Samples/HeadlessApp/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
+If you open `omniverse://<nucleus server>/users/<user name>/iot-samples/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
 
 ![Rotating Cubes](content/docs/cubes.png)
