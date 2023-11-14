@@ -1,6 +1,6 @@
 <project toolsVersion="5.0">
   <!-- We always depend on the release kit-sdk package, regardless of config -->
   <dependency name="kit_sdk_${config}" linkPath="../_build/${platform}/${config}/kit" tags="${config} non-redist">
-    <package name="kit-sdk" version="105.2+release.126296.c7b98cda.tc.${platform}.release" platforms="windows-x86_64 linux-x86_64" />
+    <package name="kit-sdk" version="105.1+release.127680.dd92291b.tc.${platform}.release" platforms="windows-x86_64 linux-x86_64" />
   </dependency>
 </project>

@@ -39,6 +39,7 @@ RESOLVER_DIR = DEPS_DIR.joinpath("omni_usd_resolver", args.config)
 
 EXTRA_PATHS = [str(CLIENT_LIB_DIR), str(USD_BIN_DIR), str(USD_LIB_DIR), str(BUILD_DIR), str(RESOLVER_DIR)]
 EXTRA_PYTHON_PATHS = [
+    str(Path(SCRIPT_DIR).resolve().parents[0]),
     str(USD_LIB_DIR.joinpath("python")),
     str(CLIENT_LIB_DIR.joinpath("bindings-python")),
     str(BUILD_DIR.joinpath("bindings-python")),

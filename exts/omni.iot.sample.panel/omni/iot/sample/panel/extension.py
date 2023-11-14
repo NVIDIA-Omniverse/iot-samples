@@ -21,6 +21,7 @@
 
 import omni.ext
 import omni.ui as ui
+import omni.kit.usd.layers as layers
 from pxr import Usd, Sdf, Tf, UsdGeom
 import omni.ui.color_utils as cl
 
@@ -57,7 +58,7 @@ class LiveCube:
         if self._xform and not self._op:
             op = self._xform.AddTranslateOp(opSuffix="offset")
             op.Set(time=1, value=(0, -20.0, 0))
-            op.Set(time=192, value=(0, -950, 0))
+            op.Set(time=192, value=(0, -440, 0))
             self._op = True
 
     def pause(self):
@@ -105,63 +106,31 @@ class OmniIotSamplePanelExtension(omni.ext.IExt):
     def on_startup(self, ext_id):
         print("[omni.iot.sample.panel] startup")
 
+        self._iot_prim = None
+        self.listener = None
+        self._stage_event_sub = None
+        self._window = None
         self._usd_context = omni.usd.get_context()
         self._stage = self._usd_context.get_stage()
+        self._live_syncing = layers.get_live_syncing(self._usd_context)
+        self._layers = layers.get_layers(self._usd_context)
+
         self._selected_prim = None
 
-        live_layer_path = None
-        root_layer = self._stage.GetRootLayer()
-        subLayerPaths = root_layer.subLayerPaths
-        for subLayerPath in subLayerPaths:
-            if subLayerPath.endswith(".live"):
-                live_layer_path = subLayerPath
+        self._layers_event_subscription = self._layers.get_event_stream().create_subscription_to_pop_by_type(
+            layers.LayerEventType.LIVE_SESSION_STATE_CHANGED,
+            self._on_layers_event,
+            name=f"omni.iot.sample.panel {str(layers.LayerEventType.LIVE_SESSION_STATE_CHANGED)}",
+        )
 
-        self._window = ui.Window("Sample IoT Data", width=350, height=380)
-        self._window.frame.set_style(uiElementStyles.mainWindow)
-        self._stage.SetEditTarget(root_layer)
-        root_layer.startTimeCode = 1
-        root_layer.endTimeCode = 192
-        UsdGeom.SetStageUpAxis(self._stage, UsdGeom.Tokens.z)
-
-        if live_layer_path:
-            live_layer = None
-            for sub_layer in self._stage.GetLayerStack():
-                if sub_layer.realPath == live_layer_path:
-                    live_layer = sub_layer
-
-            if live_layer:
-                live_layer.startTimeCode = 1
-                live_layer.endTimeCode = 192
-                # self._stage.SetEditTarget(live_layer)
-                self._iot_prim = self._stage.GetPrimAtPath("/iot")
-                self._cube = LiveCube(self._stage, "/World/Cube")
-                self._rollers = []
-
-                for x in range(38):
-                    self._rollers.append(
-                        LiveRoller(self._stage, f"/World/Geometry/SM_ConveyorBelt_A08_Roller{x+1:02d}_01")
-                    )
-
-                # this will capture when the select changes in the stage_selected_iot_prim_label
-                self._stage_event_sub = self._usd_context.get_stage_event_stream().create_subscription_to_pop(
-                    self._on_stage_event, name="Stage Update"
-                )
-
-                # this will capture changes to the IoT data
-                self.listener = Tf.Notice.Register(Usd.Notice.ObjectsChanged, self._on_objects_changed, self._stage)
-
-                # create an simple window with empty VStack for the IoT data
-                with self._window.frame:
-                    with ui.VStack():
-                        with ui.HStack(height=22):
-                            ui.Label("IoT Prim:", style=uiTextStyles.title, width=75)
-                            self._selected_iot_prim_label = ui.Label(" ", style=uiTextStyles.title)
-                        self._property_stack = ui.VStack(height=22)
-
-                if self._iot_prim:
-                    self._on_selected_prim_changed()
+        self._update_ui()
 
     def on_shutdown(self):
+        self._iot_prim = None
+        self.listener = None
+        self._stage_event_sub = None
+        self._window = None
+        self._layers_event_subscription = None
         print("[omni.iot.sample.panel] shutdown")
 
     def _on_velocity_changed(self, speed):
@@ -245,3 +214,60 @@ class OmniIotSamplePanelExtension(omni.ext.IExt):
             self._update_frame()
 
     # ===================== stage events END =======================
+
+    def _on_layers_event(self, event):
+        payload = layers.get_layer_event_payload(event)
+        if not payload:
+            return
+
+        if payload.event_type == layers.LayerEventType.LIVE_SESSION_STATE_CHANGED:
+            if not payload.is_layer_influenced(self._usd_context.get_stage_url()):
+                return
+
+        self._update_ui()
+
+    def _update_ui(self):
+        if self._live_syncing.is_stage_in_live_session():
+            print("[omni.iot.sample.panel] joining live session")
+            if self._iot_prim is None:
+                self._window = ui.Window("Sample IoT Data", width=350, height=390)
+                self._window.frame.set_style(uiElementStyles.mainWindow)
+
+                sessionLayer = self._stage.GetSessionLayer()
+                sessionLayer.startTimeCode = 1
+                sessionLayer.endTimeCode = 192
+                self._iot_prim = self._stage.GetPrimAtPath("/iot")
+                self._cube = LiveCube(self._stage, "/World/cube")
+                self._rollers = []
+
+                for x in range(38):
+                    self._rollers.append(
+                        LiveRoller(self._stage, f"/World/Geometry/SM_ConveyorBelt_A08_Roller{x+1:02d}_01")
+                    )
+
+                # this will capture when the select changes in the stage_selected_iot_prim_label
+                self._stage_event_sub = self._usd_context.get_stage_event_stream().create_subscription_to_pop(
+                    self._on_stage_event, name="Stage Update"
+                )
+
+                # this will capture changes to the IoT data
+                self.listener = Tf.Notice.Register(Usd.Notice.ObjectsChanged, self._on_objects_changed, self._stage)
+
+                # create an simple window with empty VStack for the IoT data
+                with self._window.frame:
+                    with ui.VStack():
+                        with ui.HStack(height=22):
+                            ui.Label("IoT Prim:", style=uiTextStyles.title, width=75)
+                            self._selected_iot_prim_label = ui.Label(" ", style=uiTextStyles.title)
+                        self._property_stack = ui.VStack(height=22)
+
+                if self._iot_prim:
+                    self._on_selected_prim_changed()
+
+        else:
+            print("[omni.iot.sample.panel] leaving live session")
+            self._iot_prim = None
+            self.listener = None
+            self._stage_event_sub = None
+            self._property_stack = None
+            self._window = None
