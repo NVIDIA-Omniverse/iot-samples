@@ -65,6 +65,7 @@ Follow the [Getting Started with Omniverse ](https://www.nvidia.com/en-us/omnive
 
 If you've already installed Omniverse, ensure you have updated to the latest
 
+* Python 3.10 or greater
 * Kit 105.1 or greater
 * USD Composer 2023.2.0 or greater
 * Nucleus 2023.1 or greater
