@@ -11,13 +11,18 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
+RUN adduser -u 5678 --disabled-password --gecos "" appuser
+
 WORKDIR /app
-COPY . /app
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+COPY --chown=appuser:appuser ./_build/ _build/
+COPY --chown=appuser:appuser ./tools/ tools/
+COPY --chown=appuser:appuser ./requirements.txt .
+# Copy the source directory into the container
+# This is done separately to ensure that changes in the source directory
+# don't invalidate the cache for the rest of the copied files
+COPY --chown=appuser:appuser ./source/ /app/source/
+
 USER appuser
-
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 ENTRYPOINT [ "python", "source/ingest_app_csv/run_app.py", "--server", "<server ip>", "--username", "<username>", "--password", "<password>"  ]

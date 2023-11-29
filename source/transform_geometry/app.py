@@ -28,12 +28,15 @@ import omni.client
 from pxr import Usd, Sdf
 from pathlib import Path
 import time
-from omni.live import LiveEditSession, LiveCube
+from omni.live import LiveEditSession, LiveCube, getUserNameFromToken
 
 OMNI_HOST = os.environ.get("OMNI_HOST", "localhost")
 OMNI_USER = os.environ.get("OMNI_USER", "ov")
 if OMNI_USER.lower() == "omniverse":
     OMNI_USER = "ov"
+elif OMNI_USER.lower() == "$omni-api-token":
+    OMNI_USER = getUserNameFromToken(os.environ.get("OMNI_PASS"))
+
 BASE_FOLDER = "omniverse://" + OMNI_HOST + "/Users/" + OMNI_USER + "/iot-samples"
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 CONTENT_DIR = Path(SCRIPT_DIR).resolve().parents[1].joinpath("content")

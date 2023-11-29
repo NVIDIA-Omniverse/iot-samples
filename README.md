@@ -15,8 +15,14 @@
     - [Using an Extension](#using-an-extension)
     - [Using Action Graph](#using-actiongraph)
     - [Direct to USD from headless connector](#direct-to-usd-from-headless-connector)
+- [Joining a Live Session](#joining-a-live-session)
+- [API Key Authentication](#api-key-authentication)
+- [Using Environment Variables](#using-environment-variables)
 
 # Overview
+
+Note: Before you clone the repo, ensure you have Git LFS installed and enabled. [Find out more about Git LFS](https://git-lfs.com/)
+
 Developers can build their own IoT solutions for Omniverse by following the guidelines set out in these samples.
 
 IoT Samples guides you on how-to:
@@ -138,6 +144,12 @@ To execute the application run the following:
     -p <password>
     -s <nucleus server> (optional default: localhost)
 ```
+Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables))
+
+```
+> python source/ingest_app_csv/run_app.py
+```
+
 
 Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
 
@@ -168,15 +180,7 @@ The CSV ingest application can be found in the `./source/ingest_app_csv` folder.
     - Sleep for the the duration of delta between the previous and current `TimeStamp`.
 
 
-In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session.
-
-Here's how-to join a live collaboration session. Click on `Join Session`
-
-![join session](content/docs/join_session.png)
-
-Select `iot-session` from the drop down to join the already created live session.
-
-![joint iot session](content/docs/join_iot_session.png)
+In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
 
@@ -192,6 +196,11 @@ To execute the application run the the following:
     -u <user name>
     -p <password>
     -s <nucleus server> (optional default: localhost)
+```
+Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables))
+
+```
+> python source/ingest_app_mqtt/run_app.py
 ```
 
 Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
@@ -237,18 +246,9 @@ The MQTT ingest application can be found in the `./source/ingest_app_mqtt` folde
 
 
 
-In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session.
-
-Here's how-to join a live collaboration session. Click on `Join Session`
-
-![join session](content/docs/join_session.png)
-
-Select `iot-session` from the drop down to join the already created live session.
-
-![joint iot session](content/docs/join_iot_session.png)
+In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. . See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
-
 
 ![iot data in usd](content/docs/stage_001.png?raw=true)
 
@@ -394,7 +394,7 @@ Click on the `play` icon on the left toolbar of the USD Composer and the extensi
 
 ![open settings](content/docs/play_to_animate.png?raw=true)
 
-and then run one of the following
+and then run one of the following:
 
  ```
     source\ingest_app_csv\run_app.py
@@ -410,6 +410,17 @@ and then run one of the following
         -p <password>
         -s <nucleus server> (optional default: localhost)
 ```
+
+If you are using Environment Variables (see [Using Environment Variables](#using-environment-variables)) then run one of the following:
+
+```
+> python source/ingest_app_csv/run_app.py
+```
+or
+```
+> python source/ingest_app_mqtt/run_app.py
+```
+
 Username and password are for the target Nucleus instance (running on local workstation or on cloud) that you will be connecting to for your IoT projects.
 
  You will see the following animation with the cube moving:
@@ -469,3 +480,71 @@ The sample geometry transformation application can be found in `source\transform
 If you open `omniverse://<nucleus server>/users/<user name>/iot-samples/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
 
 ![Rotating Cubes](content/docs/cubes.png)
+
+# Joining A Live Session
+
+Here's how-to join a live collaboration session. Click on `Join Session`
+
+![join session](content/docs/join_session.png)
+
+Select `iot-session` from the drop down to join the already created live session.
+
+![joint iot session](content/docs/join_iot_session.png)
+
+# API Key Authentication
+To authenicate the connector application using an API Key, start Nucleus Explore from the Omniverse Launcher application and right click on the server you wish to connect to and select `API Tokens`
+
+![select API Tokens](content/docs/auth_1.png)
+
+Provide a token name and click `Create`
+
+![create API Tokens](content/docs/auth_2.png)
+
+Copy the token token value and store it somewhere safe.
+
+If you are using the `run_app.py` application launcher you can do the following:
+
+```
+> python source/ingest_app_csv/run_app.py
+    -u $omni-api-token
+    -p <api token>
+    -s <nucleus server> (optional default: localhost)
+```
+
+Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables)) you can do the following:
+
+```
+> python source/ingest_app_csv/run_app.py
+```
+
+# Using Environment Variables
+
+The samples supports Nucleus authentication via Environment Variables.
+
+For Windows Powershell with User Name/Password:
+```powershell
+$Env:OMNI_HOST = "<host name>"
+$Env:OMNI_USER = "<user name>"
+$Env:OMNI_PASS = "<password>"
+```
+
+For Windows Powershell with API Token:
+```powershell
+$Env:OMNI_HOST = "<host name>"
+$Env:OMNI_USER = "`$omni-api-token"
+$Env:OMNI_PASS = "<API Token>"
+```
+
+For Linux Bash with User Name/Password:
+```bash
+export OMNI_HOST=<host name>
+export OMNI_USER=<user name>
+export OMNI_PASS=<password>
+```
+
+For Linux Bash with API Token:
+```bash
+export OMNI_HOST=<host name>
+export OMNI_USER=\$omni-api-token
+export OMNI_PASS=<API Token>
+```

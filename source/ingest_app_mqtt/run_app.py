@@ -19,10 +19,14 @@ if PLATFORM_MACHINE == "i686" or PLATFORM_MACHINE == "AMD64":
 
 CURRENT_PLATFORM = f"{PLATFORM_SYSTEM}-{PLATFORM_MACHINE}"
 
+default_username = os.environ.get("OMNI_USER")
+default_password = os.environ.get("OMNI_PASS")
+default_server = os.environ.get("OMNI_HOST", "localhost")
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--server", "-s", default="localhost")
-parser.add_argument("--username", "-u")
-parser.add_argument("--password", "-p")
+parser.add_argument("--server", "-s", default=default_server)
+parser.add_argument("--username", "-u", default=default_username)
+parser.add_argument("--password", "-p", default=default_password)
 parser.add_argument("--config", "-c", choices=["debug", "release"], default="release")
 parser.add_argument("--platform", default=CURRENT_PLATFORM)
 args = parser.parse_args()
