@@ -271,3 +271,8 @@ class OmniIotSamplePanelExtension(omni.ext.IExt):
             self._stage_event_sub = None
             self._property_stack = None
             self._window = None
+            self._window = ui.Window("Sample IoT Data", width=350, height=390)
+            self._window.frame.set_style(uiElementStyles.mainWindow)
+            with self._window.frame:
+                with ui.VStack(height =50):
+                    ui.Label("Please enter a live session to begin", style= uiTextStyles.title2)
