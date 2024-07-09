@@ -166,8 +166,7 @@ def connect_mqtt(iot_topic):
         print(f"subscribed {mid} {granted_qos}")
 
     # Set Connecting Client ID
-    client = mqtt_client.Client(f"python-mqtt-{random.randint(0, 1000)}")
-
+    client = mqtt_client.Client(client_id=f"python-mqtt-{random.randint(0, 1000)}")
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_subscribe = on_subscribe
