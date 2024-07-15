@@ -1,14 +1,27 @@
 <project toolsVersion="5.0">
   <!-- Import dependencies from Kit SDK to ensure we're using the same versions. -->
-  <import path="../_build/${platform}/${config}/kit/dev/all-deps.packman.xml">
+  <import path="../../_build/${platform}/${config}/kit/dev/all-deps.packman.xml">
     <filter include="omni_usd_resolver" />
     <filter include="omni_client_library" />
     <filter include="python" />
+    <filter include="nv_usd_py310_release"/>
+    <filter include="winsdk" />
   </import>
 
   <!-- Override the link paths to point to the correct locations. -->
   <dependency name="omni_usd_resolver" linkPath="../_build/target-deps/omni_usd_resolver" />
   <dependency name="omni_client_library" linkPath="../_build/target-deps/omni_client_library" />
   <dependency name="python" linkPath="../_build/target-deps/python" />
+  <dependency name="nv_usd_py310_release" linkPath="../_build/target-deps/usd/release"/>
+
+  <!-- Import host deps from Kit SDK to keep in sync -->
+  <import path="../../_build/${platform}/${config}/kit/dev/deps/host-deps.packman.xml">
+    <filter include="premake" />
+    <filter include="msvc" />
+  </import>
+
+  <dependency name="premake" linkPath="../../_build/host-deps/premake" />
+  <dependency name="msvc" linkPath="../../_build/host-deps/msvc" />
+  <dependency name="winsdk" linkPath="../../_build/host-deps/winsdk" />
 
 </project>
