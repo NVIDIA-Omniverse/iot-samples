@@ -372,33 +372,18 @@ The sample IoT Extension uses Omniverse Extensions, which are the core building 
 
 The IoT Extension demonstrates;
 
-1. Visualizing IoT data
-2. Animating a USD stage using IoT data
+- Visualizing IoT data
+- Animating a USD stage using IoT data
 
-To enable the IoT Extension in USD Composer or Kit, do the following:
-
-Open the Extensions panel by clicking on **Window** > **Extensions** in the menu and then follow the steps as shown.
-
-![open settings](readme-assets/docs/ext_001.png?raw=true)
-
-![map to extension folder](readme-assets/docs/ext_002.png?raw=true)
-
-![enabling extension](readme-assets/docs/enabling_iot_panel_extension.png?raw=true)
 
 1. **Visualizing IoT data**
 
 The IoT Extension leverages the Omniverse UI Framework to visualize the IoT data as a panel. [Find out more about the Omniverse UI Framework](https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html)
 
-
 Once you have enabled the IoT extension, you should see IoT data visualized in a Panel.
 
-![iot panel](readme-assets/docs/iot_panel.png?raw=true)
+![iot panel](readme-assets/docs/ext_003.png?raw=true)
 
-Alternatively, you can launch your app from the console with this folder added to search path and your extension enabled, e.g.:
-
-```
-> app\omni.code.bat --ext-folder exts --enable omni.iot.sample.panel
-```
 2. **Animating a USD stage using IoT data**
 
 In your Omniverse application,
@@ -407,7 +392,7 @@ open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A0
 
 Ensure the IoT Extension is enabled.
 
-Click on the `play` icon on the left toolbar of the USD Composer and the extension will animate to the `Velocity` value change in the IoT data
+Click on the `play` icon on the bootm right of the applications's viewport and the extension will animate to the `Velocity` value change in the IoT data
 
 ![open settings](readme-assets/docs/play_to_animate.png?raw=true)
 

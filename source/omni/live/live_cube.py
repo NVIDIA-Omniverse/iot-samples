@@ -62,6 +62,7 @@ class LiveCube:
             if op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
                 self._translate = op
 
+        self.scale(Gf.Vec3f(1.0))
         if self._rotateXYZOp is None:
             self._rotateXYZOp = self.cube.AddRotateXYZOp()
         self._rotation = Gf.Vec3f(0.0, 0.0, 0.0)

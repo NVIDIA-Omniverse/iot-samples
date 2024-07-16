@@ -135,6 +135,8 @@
     "python.analysis.extraPaths": [
         "_build/pip-packages",
         "_build/windows-x86_64/debug/kit/kernel/py",
+        "_build/windows-x86_64/release/exts/iot_sample.ui_panel",
+        "_build/windows-x86_64/release/exts/iot_samples.ui_panel",
         "_build/windows-x86_64/release/exts/iot_samples.usd_explorer.setup",
         "_build/windows-x86_64/release/extscache/carb.audio-0.1.0+fcefe91f.wx64.r.cp310",
         "_build/windows-x86_64/release/extscache/carb.audio-0.1.0+fcefe91f.wx64.r.cp310/pip_prebundle",
@@ -601,6 +603,7 @@
         "_repo/deps/repo_man",
         "_repo/deps/repo_man_deps",
         "_repo/deps/repo_package",
+        "_repo/deps/repo_template_deps",
         "_repo/deps/repo_test",
         "_repo/deps/uv_deps",
         "tools/repoman",

@@ -103,7 +103,7 @@ template_name = "omni.usd_explorer"
 "omni.warp.core" = {}
 "usdrt.scenegraph" = {}
 "iot_samples.usd_explorer.setup" = { order = 10000 }  # This is your application setup Extensions. order = 10000 makes it run last
-"omni.iot.sample.panel" = { order = 10001 }  # This is the IoT panel
+"iot_samples.ui_panel" = { order = 10001 }  # This is the IoT panel
 
 [dependencies."filter:platform"."windows-x86_64"]
 "omni.kit.window.modifier.titlebar" = {version = "=105.2.16"}  # Use exact version to avoid supported target platform check
@@ -131,6 +131,7 @@ excluded = [
 generatedVersionLockExclude = [
 	"omni.app.usd_explorer",
 	"iot_samples.usd_explorer.setup",
+	"iot_samples.ui_panel"
 ]
 registryEnabled = true
 skipPublishVerification = false
@@ -663,6 +664,7 @@ dependencies = [
 
 pythonTests.include = [
     "iot_samples.usd_explorer.setup.tests.*",
+    "iot_samples.ui_panel.tests.*",
 ]
 args = [
 	"--portable",
@@ -703,6 +705,7 @@ timeout = 600
 [settings.app.exts]
 enabled = [
 	"iot_samples.usd_explorer.setup-0.1.0",
+	"iot_samples.ui_panel-0.1.0",
 	"omni.kit.asset_converter-2.1.11",
 	"omni.kit.browser.asset-1.3.9",
 	"omni.kit.browser.core-2.3.11",

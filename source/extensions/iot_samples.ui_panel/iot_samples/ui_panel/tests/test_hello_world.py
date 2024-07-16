@@ -1,13 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
+#
+# NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+# property and proprietary rights in and to this material, related
+# documentation and any modifications thereto. Any use, reproduction,
+# disclosure or distribution of this material and related documentation
+# without an express license agreement from NVIDIA CORPORATION or
+# its affiliates is strictly prohibited.
+
 # NOTE:
 #   omni.kit.test - std python's unittest module with additional wrapping to add suport for async/await tests
 #   For most things refer to unittest docs: https://docs.python.org/3/library/unittest.html
 import omni.kit.test
 
-# Extnsion for writing UI tests (simulate UI interaction)
+# Extension for writing UI tests (to simulate UI interaction)
 import omni.kit.ui_test as ui_test
 
 # Import extension python module we are testing with absolute import path, as if we are external user (other extension)
-import omni.iot.sample.panel
+import iot_samples.ui_panel
 
 
 # Having a test class dervived from omni.kit.test.AsyncTestCase declared on the root of module will make it auto-discoverable by omni.kit.test
@@ -20,22 +30,19 @@ class Test(omni.kit.test.AsyncTestCase):
     async def tearDown(self):
         pass
 
-    # Actual test, notice it is "async" function, so "await" can be used if needed
-    @omni.kit.test.omni_test_registry(guid="f898a949-bacc-41f5-be56-b4eb8923f54e")
+    # Actual test, notice it is an "async" function, so "await" can be used if needed
     async def test_hello_public_function(self):
-        result = omni.iot.sample.panel.some_public_function(4)
+        result = iot_samples.ui_panel.some_public_function(4)
         self.assertEqual(result, 256)
 
-
-    @omni.kit.test.omni_test_registry(guid="4626d574-659f-4a85-8958-9fa8588fbce3")
     async def test_window_button(self):
 
         # Find a label in our window
-        label = ui_test.find("My Window//Frame/**/Label[*]")
+        label = ui_test.find("IoT Samples UI Panel Extension//Frame/**/Label[*]")
 
         # Find buttons in our window
-        add_button = ui_test.find("My Window//Frame/**/Button[*].text=='Add'")
-        reset_button = ui_test.find("My Window//Frame/**/Button[*].text=='Reset'")
+        add_button = ui_test.find("IoT Samples UI Panel Extension//Frame/**/Button[*].text=='Add'")
+        reset_button = ui_test.find("IoT Samples UI Panel Extension//Frame/**/Button[*].text=='Reset'")
 
         # Click reset button
         await reset_button.click()
