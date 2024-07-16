@@ -26,6 +26,7 @@
 **/_build/linux-aarch64
 **/_build/linux-x86_64
 **/_build/windows-x86_64
+**/_build/target-deps/pip_prebundle
 **/_compiler
 **/_conan
 **/_deps

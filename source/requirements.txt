@@ -1,0 +1,4 @@
+pandas
+paho-mqtt
+fastapi
+pyjwt

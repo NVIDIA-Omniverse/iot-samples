@@ -6,6 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+
 WORKDIR /app
 COPY . /app
 
@@ -14,5 +15,10 @@ COPY . /app
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
+RUN python -m pip install -r source/requirements.txt
+
+# Install pip requirements into the OV instance of python
+RUN python source/requirements.py
+
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-ENTRYPOINT [ "python", "source/ingest_app_csv/run_app.py", "--server", "<server ip>", "--username", "<username>", "--password", "<password>"  ]
+ENTRYPOINT [ "python", "source/ingest_app_csv/run_app.py", "--server", "172.23.0.1", "--username", "omniverse", "--password", "omniverse"  ]
