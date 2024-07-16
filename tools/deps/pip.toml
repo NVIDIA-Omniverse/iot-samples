@@ -12,16 +12,19 @@
 #
 
 # Another sample
-# [[dependency]]
-# python = "../../_build/target-deps/python"
-# packages = [
-#     "toml==0.10.1",
-# ]
-# target = "../../_build/target-deps/pip_prebundle"
-# platforms = ["*"]
-# download_only = false
-# append_to_install_folder = true
-# python_include_dir = true
-# subprocess_path = ["${root}/_build/host-deps/msvc/MSBuild/Current/Bin", "${root}/_build/host-deps/msvc/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64", "${root}/_build/host-deps/msvc/VC/Auxiliary/Build", "${root}/_build/host-deps/winsdk/bin/x64"]
-# msvc_path = "${root}/_build/host-deps/msvc/VC/Tools/MSVC/14.29.30133"
-# win_sdk_path = "${root}/_build/host-deps/winsdk"
+[[dependency]]
+python = "../../_build/target-deps/python"
+packages = ["pandas", "paho-mqtt", "fastapi", "pyjwt"]
+target = "../../_build/target-deps/pip_prebundle"
+platforms = ["*"]
+download_only = false
+append_to_install_folder = true
+python_include_dir = true
+subprocess_path = [
+    "${root}/_build/host-deps/msvc/MSBuild/Current/Bin",
+    "${root}/_build/host-deps/msvc/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64",
+    "${root}/_build/host-deps/msvc/VC/Auxiliary/Build",
+    "${root}/_build/host-deps/winsdk/bin/x64",
+]
+msvc_path = "${root}/_build/host-deps/msvc/VC/Tools/MSVC/14.29.30133"
+win_sdk_path = "${root}/_build/host-deps/winsdk"
