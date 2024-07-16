@@ -26,7 +26,9 @@ import os
 import omni.client
 from pxr import Usd, Sdf, Gf
 from pathlib import Path
-import pandas as pd
+from pandas.core.tools.datetimes import to_datetime
+from pandas.io.parsers import read_csv
+
 import time
 from omni.live import LiveEditSession, LiveCube, getUserNameFromToken
 
@@ -65,7 +67,7 @@ def initialize_device_prim(live_layer, iot_topic):
         iot_spec.RemoveProperty(attrib)
 
     IOT_TOPIC_DATA = f"{CONTENT_DIR}/{iot_topic}_iot_data.csv"
-    data = pd.read_csv(IOT_TOPIC_DATA)
+    data = read_csv(IOT_TOPIC_DATA)
     data.head()
 
     # create all the IoT attributes that will be written
@@ -136,11 +138,11 @@ def write_to_live(live_layer, iot_topic, group, ts):
 def run(stage, live_layer, iot_topic):
     # we assume that the file contains the data for single device
     IOT_TOPIC_DATA = f"{CONTENT_DIR}/{iot_topic}_iot_data.csv"
-    data = pd.read_csv(IOT_TOPIC_DATA)
+    data = read_csv(IOT_TOPIC_DATA)
     data.head()
 
     # Converting to DateTime Format and drop ms
-    data["TimeStamp"] = pd.to_datetime(data["TimeStamp"])
+    data["TimeStamp"] = to_datetime(data["TimeStamp"])
     data["TimeStamp"] = data["TimeStamp"].dt.floor("s")
 
     data.set_index("TimeStamp")
