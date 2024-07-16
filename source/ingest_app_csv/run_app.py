@@ -19,8 +19,8 @@ if PLATFORM_MACHINE == "i686" or PLATFORM_MACHINE == "AMD64":
 
 CURRENT_PLATFORM = f"{PLATFORM_SYSTEM}-{PLATFORM_MACHINE}"
 
-default_username = os.environ.get("OMNI_USER")
-default_password = os.environ.get("OMNI_PASS")
+default_username = os.environ.get("OMNI_USER", "omniverse")
+default_password = os.environ.get("OMNI_PASS", "omniverse")
 default_server = os.environ.get("OMNI_HOST", "localhost")
 
 parser = argparse.ArgumentParser()
@@ -47,6 +47,7 @@ EXTRA_PYTHON_PATHS = [
     str(USD_LIB_DIR.joinpath("python")),
     str(CLIENT_LIB_DIR.joinpath("bindings-python")),
     str(BUILD_DIR.joinpath("bindings-python")),
+    str(DEPS_DIR.joinpath("pip_prebundle")),
 ]
 
 if PLATFORM_SYSTEM == "windows":
@@ -71,8 +72,6 @@ else:
 
 plugin_paths = DEPS_DIR.joinpath("omni_usd_resolver", args.config, "usd", "omniverse", "resources")
 os.environ["PXR_PLUGINPATH_NAME"] = str(plugin_paths)
-REQ_FILE = ROOT_DIR.joinpath("requirements.txt")
-subprocess.run(f"{PYTHON_EXE} -m pip install -r {REQ_FILE}", shell=True)
 result = subprocess.run(
     [PYTHON_EXE, os.path.join(SCRIPT_DIR, "app.py")],
     stderr=subprocess.STDOUT,

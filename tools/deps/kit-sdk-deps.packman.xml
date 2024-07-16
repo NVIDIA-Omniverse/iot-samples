@@ -4,6 +4,7 @@
     <filter include="omni_usd_resolver" />
     <filter include="omni_client_library" />
     <filter include="python" />
+    <filter include="nv_usd_py310_release"/>
     <filter include="winsdk" />
   </import>
 
@@ -11,6 +12,7 @@
   <dependency name="omni_usd_resolver" linkPath="../../_build/target-deps/omni_usd_resolver" />
   <dependency name="omni_client_library" linkPath="../../_build/target-deps/omni_client_library" />
   <dependency name="python" linkPath="../../_build/target-deps/python" />
+  <dependency name="nv_usd_py310_${config}" linkPath="../../_build/target-deps/usd/${config}"/>
 
   <!-- Import host deps from Kit SDK to keep in sync -->
   <import path="../../_build/${platform}/${config}/kit/dev/deps/host-deps.packman.xml">
