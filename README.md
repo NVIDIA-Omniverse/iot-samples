@@ -193,7 +193,7 @@ The CSV ingest application can be found in the `./source/ingest_app_csv` folder.
     - Sleep for the the duration of delta between the previous and current `TimeStamp`.
 
 
-In your Omniverse applicatyion, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
+In your Omniverse application, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
 
