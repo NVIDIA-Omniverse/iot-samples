@@ -21,4 +21,4 @@ RUN python -m pip install -r source/requirements.txt
 RUN python source/requirements.py
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-ENTRYPOINT [ "python", "source/ingest_app_csv/run_app.py", "--server", "172.23.0.1", "--username", "omniverse", "--password", "omniverse"  ]
+ENTRYPOINT [ "python", "source/ingest_app_csv/run_app.py", "--server", "<server ip>", "--username", "<username>", "--password", "<password>"  ]
