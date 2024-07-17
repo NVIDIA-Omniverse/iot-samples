@@ -1,3 +1,8 @@
+0.3
+-----
+* Migrated to kit-sdk 106
+* Updated MQQT sample to reflect updates in dependencies
+
 0.2
 -----
 * Added support for API Token authentication
