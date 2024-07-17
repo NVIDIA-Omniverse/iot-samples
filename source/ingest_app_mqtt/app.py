@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,8 +27,7 @@ import os
 import omni.client
 from pxr import Usd, Sdf, Gf
 from pathlib import Path
-from pandas.core.tools.datetimes import to_datetime
-from pandas.io.parsers import read_csv
+import pandas as pd
 import time
 from paho.mqtt import client as mqtt_client
 import random
@@ -67,7 +66,7 @@ def initialize_device_prim(live_layer, iot_topic):
         iot_spec.RemoveProperty(attrib)
 
     IOT_TOPIC_DATA = f"{CONTENT_DIR}/{iot_topic}_iot_data.csv"
-    data = read_csv(IOT_TOPIC_DATA)
+    data = pd.read_csv(IOT_TOPIC_DATA)
     data.head()
 
     # create all the IoT attributes that will be written
@@ -180,11 +179,11 @@ def connect_mqtt(iot_topic):
 def run(stage, live_layer, iot_topic):
     # we assume that the file contains the data for single device
     IOT_TOPIC_DATA = f"{CONTENT_DIR}/{iot_topic}_iot_data.csv"
-    data = read_csv(IOT_TOPIC_DATA)
+    data = pd.read_csv(IOT_TOPIC_DATA)
     data.head()
 
     # Converting to DateTime Format and drop ms
-    data["TimeStamp"] = to_datetime(data["TimeStamp"])
+    data["TimeStamp"] = pd.to_datetime(data["TimeStamp"])
     data["TimeStamp"] = data["TimeStamp"].dt.floor("s")
 
     data.set_index("TimeStamp")
