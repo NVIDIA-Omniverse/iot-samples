@@ -19,10 +19,8 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-
-
 [package]
-title = "IoT Samples USD Explorer"
+title = "IoT Samples Panel Extension"
 version = "0.1.0"
 description = "A reference application for reviewing and constructing large facilities such as factories, warehouses and more."
 keywords = ["app", "usd", "explore"]  # That makes it browsable in UI with "experience" filter
@@ -115,13 +113,14 @@ template_name = "omni.usd_explorer"
 "omni.usd.schema.metrics.assembler" = {}
 "omni.warp.core" = {}
 "usdrt.scenegraph" = {}
-"iot_samples.usd_explorer.setup" = { order = 10000 }  # This is your application setup Extensions. order = 10000 makes it run last
+"iot_samples.panel_extension.setup" = { order = 10000 }  # This is your application setup Extensions. order = 10000 makes it run last
+"iot_samples.ui_panel" = { order = 10001 }  # This is the IoT panel
 
 [dependencies."filter:platform"."windows-x86_64"]
 "omni.kit.window.modifier.titlebar" = {version = "=105.2.16"}  # Use exact version to avoid supported target platform check
 
 [settings.app]
-name = "IoT Samples USD Explorer"
+name = "IoT Samples Panel Extension"
 fastShutdown = true  # Fast shutdown by default
 useFabricSceneDelegate = true  # Turn on the Fabric scene delegate by default
 
@@ -142,8 +141,10 @@ excluded = [
 ]
 generatedVersionLockExclude = [
 	"omni.app.usd_explorer",
-	"iot_samples.usd_explorer.setup",
+	"iot_samples.panel_extension.setup",
+	"iot_samples.ui_panel",
 ]
+
 registryEnabled = true
 skipPublishVerification = false
 
@@ -285,12 +286,12 @@ lights = false
 displayModeLock = false
 fullscreen = false
 height = 1010
-iconPath = "${iot_samples.usd_explorer.setup}/data/nvidia-omniverse-usd_explorer.ico"
-imagePath = "${iot_samples.usd_explorer.setup}/data/nvidia-omniverse-usd_explorer_about.png"
+iconPath = "${iot_samples.panel_extension.setup}/data/nvidia-omniverse-usd_explorer.ico"
+imagePath = "${iot_samples.panel_extension.setup}/data/nvidia-omniverse-usd_explorer_about.png"
 minimalPanelsOnStartup = true
 showStartup = true
 showStatusBar = false
-title = "IoT Samples USD Explorer"
+title = "IoT Samples Panel Extension"
 toolBarHorizontal = false
 uiStyle = 'NvidiaDark'
 width = 1920
@@ -475,14 +476,14 @@ colors.caption = 0x0F0F0F
 colors.client = 0x0F0F0F
 defaultFont.color = 0xD0D0D0
 defaultFont.size = 18
-icon.file = "${iot_samples.usd_explorer.setup}/data/nvidia-omniverse-usd_explorer.ico"
+icon.file = "${iot_samples.panel_extension.setup}/data/nvidia-omniverse-usd_explorer.ico"
 icon.size = 18
 icon.use_size = false
 respondOnMouseUp = true
 separator.color = 0x00B976
 separator.width = 1
 showFileFullPath = true
-titleFormatString = "  IoT Samples USD Explorer 0.1.0 {separator} {file, board=true}"
+titleFormatString = "  IoT Samples Panel Extension 0.1.0 {separator} {file, board=true}"
 windowBorder.color = 0x0F0F0F
 windowBorder.width = 2
 
@@ -511,7 +512,7 @@ visible = false
 autoLightRig.enableWithoutMenu = true  # Enable adding a light rig whether menu item is loaded/visible or not
 defaultRig = "Sunny Sky"  # Set the default light-rig to apply for a stage opened without any lights in it
 rigImport.lightRemovalLimit = 3
-rigs = "${iot_samples.usd_explorer.setup}/data/light_rigs"  # Setup path to the light-rig items in the lighting menu
+rigs = "${iot_samples.panel_extension.setup}/data/light_rigs"  # Setup path to the light-rig items in the lighting menu
 
 [settings.exts."omni.kit.viewport.navigation.camera_manipulator"]
 orbitAutoFrameSelected = true
@@ -674,8 +675,10 @@ dependencies = [
 
 
 pythonTests.include = [
-    "iot_samples.usd_explorer.setup.tests.*",
+    "iot_samples.panel_extension.setup.tests.*",
+    "iot_samples.ui_panel.tests.*",
 ]
+
 args = [
 	"--portable",
     "--/app/window/width=1600",
@@ -714,7 +717,8 @@ timeout = 600
 # Version lock for all dependencies:
 [settings.app.exts]
 enabled = [
-	"iot_samples.usd_explorer.setup-0.1.0",
+	"iot_samples.panel_extension.setup-0.1.0",
+	"iot_samples.ui_panel-0.1.0",
 	"omni.kit.asset_converter-2.1.11",
 	"omni.kit.browser.asset-1.3.9",
 	"omni.kit.browser.core-2.3.11",

@@ -127,7 +127,7 @@ Build The application application with the following command:
 
 ### 3. Launch Omniverse
 
-Start application using:
+Start the application using:
 
 **Linux:**
 ```bash
@@ -138,7 +138,7 @@ Start application using:
 .\repo.bat launch
 ```
 
-**? Select with arrow keys which App would you like to launch:** [Select the created editor application]
+**Select `iot_samples.usd_explorer.kit` with arrow keys and press enter**
 
 ***NOTE:* The initial startup may take 5 to 8 minutes as shaders compile for the first time. After initial shader compilation, startup time will reduce dramatically**
 
@@ -262,7 +262,7 @@ The MQTT ingest application can be found in the `./source/ingest_app_mqtt` folde
 
 
 
-In your Omniverse application, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. . See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
+In your Omniverse application, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
 
@@ -376,25 +376,47 @@ The IoT Extension demonstrates;
 - Animating a USD stage using IoT data
 
 
-1. **Visualizing IoT data**
+**Visualizing IoT data**
 
 The IoT Extension leverages the Omniverse UI Framework to visualize the IoT data as a panel. [Find out more about the Omniverse UI Framework](https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html)
 
-Once you have enabled the IoT extension, you should see IoT data visualized in a Panel.
+1. **Launch Omniverse**
 
-![iot panel](readme-assets/docs/ext_003.png?raw=true)
+Start the application using:
 
-2. **Animating a USD stage using IoT data**
+**Linux:**
+```bash
+./repo.sh launch
+```
+**Windows:**
+```powershell
+.\repo.bat launch
+```
+
+**Select `iot_samples.panel_extension.kit` with arrow keys and press enter**
+
+***NOTE:* The initial startup may take 5 to 8 minutes as shaders compile for the first time. After initial shader compilation, startup time will reduce dramatically**
+
+2. **Load the staage**
 
 In your Omniverse application,
 
 open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd`.
 
-Ensure the IoT Extension is enabled.
+3. **Join the IoT Live session**
 
-Click on the `play` icon on the bootm right of the applications's viewport and the extension will animate to the `Velocity` value change in the IoT data
+See [Joining a Live Session](#joining-a-live-session)
 
-![open settings](readme-assets/docs/play_to_animate.png?raw=true)
+4. **Select the Iot Topic**
+
+![iot panel](readme-assets/docs/ext_003.png?raw=true)
+
+
+Click on the `play` icon on the bottom right of the applications's viewport and then start the timeline. The extension will animate to the `Velocity` value change in the IoT data
+
+![show the timeline](readme-assets/docs/play_to_animate.png?raw=true)
+
+![play](readme-assets/docs/start_timeline.png?raw=true)
 
 and then run one of the following:
 
