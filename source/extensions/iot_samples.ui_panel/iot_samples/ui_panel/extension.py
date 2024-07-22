@@ -198,6 +198,18 @@ class OmniIotSamplePanelExtension(omni.ext.IExt):
 
     def _on_asset_opened(self):
         print("[omni.iot.sample.panel] on_asset_opened")
+        self._usd_context = omni.usd.get_context()
+        self._stage = self._usd_context.get_stage()
+        self._live_syncing = layers.get_live_syncing(self._usd_context)
+        self._layers = layers.get_layers(self._usd_context)
+
+        self._selected_prim = None
+
+        self._layers_event_subscription = self._layers.get_event_stream().create_subscription_to_pop_by_type(
+            layers.LayerEventType.LIVE_SESSION_STATE_CHANGED,
+            self._on_layers_event,
+            name=f"omni.iot.sample.panel {str(layers.LayerEventType.LIVE_SESSION_STATE_CHANGED)}",
+        )
 
     def _on_stage_event(self, event):
         if event.type == int(omni.usd.StageEventType.SELECTION_CHANGED):
@@ -224,6 +236,9 @@ class OmniIotSamplePanelExtension(omni.ext.IExt):
         if payload.event_type == layers.LayerEventType.LIVE_SESSION_STATE_CHANGED:
             if not payload.is_layer_influenced(self._usd_context.get_stage_url()):
                 return
+
+        if self._stage is None:
+            self._stage = self._usd_context.get_stage()
 
         self._update_ui()
 
