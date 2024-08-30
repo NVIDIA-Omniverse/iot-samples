@@ -1,3 +1,7 @@
+0.3
+-----
+* Updated paho-mqtt to 2.1.0
+
 0.2
 -----
 * Added support for API Token authentication
