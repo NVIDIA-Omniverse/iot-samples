@@ -55,9 +55,9 @@ class LiveCube:
             self.mesh.CreateDoubleSidedAttr().Set(False)
             self.mesh.CreateSubdivisionSchemeAttr("bilinear")
             self.mesh.CreateDisplayColorAttr().Set([(0.463, 0.725, 0.0)])
-            self.mesh.AddTranslateOp().Set(Gf.Vec3d(0.0))
             self.mesh.AddScaleOp().Set(Gf.Vec3f(0.8535))
-            self.mesh.AddTransformOp().Set(Gf.Matrix4d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1))
+            # self.mesh.AddTransformOp().Set(Gf.Matrix4d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1))
+            self.mesh.AddTranslateOp().Set(Gf.Vec3d(0.0))
             texCoords = UsdGeom.PrimvarsAPI(self.mesh).CreatePrimvar(
                 "st", Sdf.ValueTypeNames.TexCoord2fArray, UsdGeom.Tokens.varying
             )
@@ -84,16 +84,14 @@ class LiveCube:
             if op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
                 self._translate = op
 
-        self.scale(Gf.Vec3f(1.0))
+        if self._scale is None:
+            self._scale = self.cube.AddScaleOp()
         if self._rotateXYZOp is None:
             self._rotateXYZOp = self.cube.AddRotateXYZOp()
-        self._rotation = Gf.Vec3f(0.0, 0.0, 0.0)
-        self._rotateXYZOp.Set(self._rotation)
-
-    def translate(self, value: Gf.Vec3f):
         if self._translate is None:
             self._translate = self.cube.AddTranslateOp()
-        self._translate.Set(value)
+        self._rotation = Gf.Vec3f(0.0, 0.0, 0.0)
+        self._rotateXYZOp.Set(self._rotation)
 
     def scale(self, value: Gf.Vec3f):
         if self._scale is None:
@@ -112,3 +110,8 @@ class LiveCube:
         self._rotation[1] += self._rotationIncrement[1]
         self._rotation[2] += self._rotationIncrement[2]
         self._rotateXYZOp.Set(self._rotation)
+
+    def translate(self, value: Gf.Vec3f):
+        if self._translate is None:
+            self._translate = self.cube.AddTranslateOp()
+        self._translate.Set(value)
