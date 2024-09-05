@@ -118,7 +118,7 @@ async def initialize_async(iot_topic):
     # place the cube on the conveyor
     live_cube = LiveCube(stage)
     live_cube.scale(Gf.Vec3f(0.5))
-    live_cube.translate(Gf.Vec3f(100.0, -30.0, 195.0))
+    live_cube.translate(Gf.Vec3f(60.0, -15.0, 100.0))
     omni.client.live_process()
     return stage, live_layer
 

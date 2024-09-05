@@ -26,6 +26,7 @@ import omni.kit.usd.layers as layers
 from pxr import Usd, Sdf, Tf, UsdGeom
 import omni.ui.color_utils as cl
 
+TRANSLATE = "xformOp:translate"
 TRANSLATE_OFFSET = "xformOp:translate:offset"
 ROTATE_SPIN = "xformOp:rotateX:spin"
 
@@ -57,10 +58,18 @@ class LiveCube:
 
     def resume(self):
         if self._xform and not self._op:
-            op = self._xform.AddTranslateOp(opSuffix="offset")
-            op.Set(time=1, value=(0, -20.0, 0))
-            op.Set(time=192, value=(0, -440, 0))
+            offset = self._xform.AddTranslateOp(opSuffix="offset")
+            offset.Set(time=1, value=(0, -20.0, 0))
+            offset.Set(time=192, value=(0, -220, 0))
             self._op = True
+            default_ops = []
+            for op in self._xform.GetOrderedXformOps():
+                if op.GetOpName() != TRANSLATE_OFFSET:
+                    default_ops.append(op)
+                # add the offset after the translate op on the cube
+                if op.GetOpName() == TRANSLATE:
+                    default_ops.append(offset)
+            self._xform.SetXformOpOrder(default_ops)
 
     def pause(self):
         if self._xform and self._op:
