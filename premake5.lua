@@ -16,4 +16,3 @@ repo_build.prebuild_copy {
 
 define_app("iot_samples.usd_explorer.kit")
 define_app("iot_samples.panel_extension.kit")
-define_app("iot_samples.usd_explorer_new.kit")
