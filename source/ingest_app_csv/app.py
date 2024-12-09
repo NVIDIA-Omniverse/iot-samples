@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,7 @@ import omni.client
 from pxr import Usd, Sdf, Gf
 from pathlib import Path
 import pandas as pd
+
 import time
 from omni.live import LiveEditSession, LiveCube, getUserNameFromToken
 
@@ -65,9 +66,14 @@ def initialize_device_prim(live_layer, iot_topic):
         iot_spec.RemoveProperty(attrib)
 
     IOT_TOPIC_DATA = f"{CONTENT_DIR}/{iot_topic}_iot_data.csv"
+    if os.path.exists(IOT_TOPIC_DATA):
+        print("File exists")
+    else:
+        print("File does not exist")
+
     data = pd.read_csv(IOT_TOPIC_DATA)
     data.head()
-
+    print(IOT_TOPIC_DATA)
     # create all the IoT attributes that will be written
     attr = Sdf.AttributeSpec(iot_spec, "_ts", Sdf.ValueTypeNames.Double)
     if not attr:
@@ -112,7 +118,7 @@ async def initialize_async(iot_topic):
     # place the cube on the conveyor
     live_cube = LiveCube(stage)
     live_cube.scale(Gf.Vec3f(0.5))
-    live_cube.translate(Gf.Vec3f(100.0, -30.0, 195.0))
+    live_cube.translate(Gf.Vec3f(60.0, -15.0, 100.0))
     omni.client.live_process()
     return stage, live_layer
 

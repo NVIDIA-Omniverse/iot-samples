@@ -33,20 +33,35 @@ IoT Samples guides you on how-to:
 - Perform transformations of USD geometry using IoT data
 - Incorporate Omniverse OmniGraph/ActionGraph with IoT data
 
-The repository is broken down into the following folders:
+## Repository Structure
 
-- *app* - Is a symlink to the *Omniverse Kit* based app. Note: This folder **does not exist** when the repo is first cloned. You must follow the instruction for configuring the folder which is found here: [App Link Setup](#app-link-setup).
-- *content* - Contains the content data used by the samples.
-- *deps* - Contains the packman dependencies required for the stand-alone data ingestion applications.
-- *exts* - Contains the sample Omniverse extension.
-- *source* - Contains the stand-alone python sample applications for ingesting and manipulating a USD stage with a headless connector.
-- *tools* - Contains the utility code for building and packaging Omniverse native C++ client applications,
+| Directory Item   | Purpose                                                    |
+|------------------|------------------------------------------------------------|
+| .vscode          | VS Code configuration details and helper tasks             |
+| content/         | Assets used by the samples                                 |
+| readme-assets/   | Images and additional repository documentation             |
+| source/          | Source code for the sample applications and extensions     |
+| templates/       | Template Applications and Extensions.                      |
+| tools/           | Tooling settings and repository specific (local) tools     |
+| .dockerignore    | [docklerignore](https://docs.docker.com/build/building/context/#dockerignore-files) file.            |
+| .editorconfig    | [EditorConfig](https://editorconfig.org/) file.            |
+| .gitattributes   | Git configuration.                                         |
+| .gitignore       | Git configuration.                                         |
+| Dockerfile       | [Dockerfile](https://docs.docker.com/reference/dockerfile/)                                      |
+| LICENSE          | License for the repo.                                      |
+| README.md        | Project information.                                       |
+| premake5.lua     | Build configuration - such as what apps to build.          |
+| repo.bat         | Windows repo tool entry point.                             |
+| repo.sh          | Linux repo tool entry point.                               |
+| repo.toml        | Top level configuration of repo tools.                     |
+| repo_tools.toml  | Setup of local, repository specific tools                  |
+| tar_ignore.txt   | List of file to ignore when building the Docker image      |
 
 When opening the `iot-samples` folder in Visual Studio Code, you will be promted to install a number of extensions that will enhance the python experience in Visual Studio Code.
 
 # Architecture
 
-![Connector Architecture](content/docs/architecture.jpg?raw=true)
+![Connector Architecture](readme-assets/docs/architecture.jpg?raw=true)
 
 The architecture decouples the IoT data model from the presentation in Omniverse, allowing for a data driven approach and separation of concerns that is similar to a [Model/View/Controller (MVC) design pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). The diagram above illustrates the key components to a solution. These are:
 - **Customer Domain** - represents the data sources. Industrial IoT deployments require connecting operational technology (OT) systems, such as SCADA, PLC, to information technology (IT) systems to enable various use cases to improve efficiency, productivity, and safety in various industries. These deployments provide a data ingestion endpoint to connect OT data to IT and cloud applications. Some of the widely adopted methods for connecting OT data include MQTT and Kafka. The samples in this repository use CSV and MQTT as data sources, but you can develop your IoT project with any other connectivity method.
@@ -67,87 +82,85 @@ Note: Connectors implement a producer/consumer pattern that is not mutually excl
 # Prerequisites
 Before running any of the installation a number of prerequisites are required.
 
-Follow the [Getting Started with Omniverse ](https://www.nvidia.com/en-us/omniverse/download/) to install the latest Omniverse version.
+Follow the [Getting Started with Omniverse ](https://www.nvidia.com/en-us/omniverse/download/) to install the latest Omniverse Launcher.
 
-If you've already installed Omniverse, ensure you have updated to the latest
+If you've already installed Omniverse Launcher, ensure you have updated to the latest
 
 * Python 3.10 or greater
-* Kit 105.1 or greater
-* USD Composer 2023.2.0 or greater
 * Nucleus 2023.1 or greater
 
 # Installation
 
-Once you have the latest Omniverse prerequisites installed, please run the following to install the needed Omniverse USD resolver, Omni client, and related dependencies.
+Once you have the prerequisites installed, please run the following to install the needed Omniverse USD resolver, Omni client, and related dependencies.
 
-```
-Windows
-> install.bat
-```
-```
-Linux
-> ./install.sh
-```
+### 1. Clone the Repository
 
-### App Link Setup
+Begin by cloning the `iot-samples` to your local workspace:
 
-If `app` folder link doesn't exist or becomes broken it can be recreated. For a better developer experience it is recommended to create a folder link named `app` to the *Omniverse Kit* app installed from *Omniverse Launcher*. A convenience script to use is included.
+#### 1a. Clone
 
-Run:
-
-```
-Windows
-> link_app.bat
-```
-```
-Linux
-> ./link_app.sh
+```bash
+git clone https://github.com/NVIDIA-Omniverse/iot-samples
 ```
 
+#### 1b. Navigate to Cloned Directory
 
-If successful you should see an `app` folder link in the root of this repo.
-
-If multiple Omniverse apps are installed the script will automatically select one. Or you can explicitly pass an app:
-
-```
-Windows
-> link_app.bat --app create
-```
-```
-Linux
-> ./link_app.sh --app create
+```bash
+cd iot-samples
 ```
 
-You can also pass an explicit path to the Omniverse Kit app:
+### 2. Build the Omniverse Application
 
+Build The application application with the following command:
+
+**Linux:**
+```bash
+./repo.sh build
 ```
-Windows
-> link_app.bat --path "%USERPROFILE%/AppData/Local/ov/pkg/create-2023.2.0"
+**Windows:**
+```powershell
+.\repo.bat build
+ ```
+
+ If you experience issues related to build, please see the [Usage and Troubleshooting](readme-assets/additional-docs/usage_and_troubleshooting.md) section for additional information.
+
+
+### 3. Launch Omniverse
+
+Start the application using:
+
+**Linux:**
+```bash
+./repo.sh launch
 ```
+**Windows:**
+```powershell
+.\repo.bat launch
 ```
-Linux
-> ./link_app.sh --path "~/.local/share/ov/pkg/create-2023.2.0"
-```
+
+**Select `iot_samples.usd_explorer.kit` with arrow keys and press enter**
+
+***NOTE:* The initial startup may take 5 to 8 minutes as shaders compile for the first time. After initial shader compilation, startup time will reduce dramatically**
 
 # Headless Connector
 
-Headless connectos are stand-alone applications that implements a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex.
+Headless connectos are stand-alone applications that implement a bidirectional bridge between customer domain and USD related data. The logic implemented by a connector is use-case dependent and can be simple or complex.
 
 There are two sample connector applications - [CSV Ingest Application](#csv-ingest-application) and [MQTT Ingest Application](#mqtt-ingest-application) - that transits the data as is from source to destination, whereas the [Geometry Transformation Application](#direct-to-usd-from-headless-connector) manipulates USD geometry directly in the connector. Depending on the use cases, a connector can run as a headless application locally, on-prem, at the edge, or in the cloud.
 
 ### CSV Ingest Application
 
 To execute the application run the following:
-```
-> python source/ingest_app_csv/run_app.py
+```bash
+python source/ingest_app_csv/run_app.py
     -u <user name>
     -p <password>
     -s <nucleus server> (optional default: localhost)
 ```
 Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables))
 
-```
-> python source/ingest_app_csv/run_app.py
+```bash
+python source/ingest_app_csv/run_app.py
 ```
 
 
@@ -180,27 +193,30 @@ The CSV ingest application can be found in the `./source/ingest_app_csv` folder.
     - Sleep for the the duration of delta between the previous and current `TimeStamp`.
 
 
-In `USD Composer` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
+In your Omniverse application, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
 
-![iot data in usd](content/docs/stage_001.png?raw=true)
+![iot data in usd](readme-assets/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the the data being pushed by the Python application.
 
 ### MQTT Ingest Application
 
 To execute the application run the the following:
-```
-> python source/ingest_app_mqtt/run_app.py
+
+**Windows:**
+```powershell
+python source/ingest_app_mqtt/run_app.py
     -u <user name>
     -p <password>
     -s <nucleus server> (optional default: localhost)
 ```
 Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables))
 
-```
-> python source/ingest_app_mqtt/run_app.py
+**Windows:**
+```powershell
+python source/ingest_app_mqtt/run_app.py
 ```
 
 Username and password are of the Nucleus instance (running on local workstation or on cloud) you will be connecting to for your IoT projects.
@@ -246,15 +262,15 @@ The MQTT ingest application can be found in the `./source/ingest_app_mqtt` folde
 
 
 
-In `'USD Composer'` or `Kit`, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. . See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
+In your Omniverse application, open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd` and join the `iot_session` live collaboration session. See [Joining a Live Session](#joining-a-live-session) for detailed instructions.
 
 Once you have joined the `iot_session`, then you should see the following:
 
-![iot data in usd](content/docs/stage_001.png?raw=true)
+![iot data in usd](readme-assets/docs/stage_001.png?raw=true)
 
 Selecting the `/iot/A08_PR_NVD_01` prim in the `Stage` panel and toggling the `Raw USD Properties` in the `Property` panel will provide real-time updates from the data being pushed by the python application
 
-### Containerize headless connector
+### Containerized headless connector
 The following is a simple example of how to deploy a headless connector application into Docker Desktop for Windows. Steps assume the use of
 
 - WSL (comes standard with Docker Desktop installation) and
@@ -270,13 +286,14 @@ The ollowing has to be done in **WSL environment** and *NOT* in Windows environm
 
 Once you have a new repo cloned, from within WSL run.
 
-```
-> ./install.sh
+**Linux:**
+```bash
+./repo.sh build
 ```
 
 - Share the Nucleus services using a web browser by navigating to http://localhost:3080/. Click on 'Enable Sharing'. This will enable access to  Nucleus services from WSL.
 
-    ![Sharing Nucleus services](content/docs/sharing.png)
+    ![Sharing Nucleus services](readme-assets/docs/sharing.png)
 
 - Record the *WSL IP address* of the host machine for use by the container application.
     ```
@@ -312,10 +329,6 @@ Once you have a new repo cloned, from within WSL run.
     # Turns off buffering for easier container logging
     ENV PYTHONUNBUFFERED=1
 
-    # Install pip requirements
-    COPY requirements.txt .
-    RUN python -m pip install -r requirements.txt
-
     WORKDIR /app
     COPY . /app
 
@@ -329,16 +342,20 @@ Once you have a new repo cloned, from within WSL run.
 
     ```
 - Create a docker image named `headlessapp`.
+
+    **Linux:**
     ```bash
     tar -czh -X tar_ignore.txt . | docker build -t headlessapp -
     ```
 - Run a container with the lastest version of the `headlessapp` image
-    ```
+
+    **Windows:**
+    ```powershell
     docker run -d --add-host host.docker.internal:host-gateway -p 3100:3100 -p 8891:8891 -p 8892:8892  headlessapp:latest
     ```
 - Watch the application run in Docker Desktop.
 
-    ![open settings](content/docs/docker_logs.png?raw=true)
+    ![open settings](readme-assets/docs/docker_logs.png?raw=true)
 
 
 # Consuming IoT data in USD
@@ -355,77 +372,89 @@ The sample IoT Extension uses Omniverse Extensions, which are the core building 
 
 The IoT Extension demonstrates;
 
-1. Visualizing IoT data
-2. Animating a USD stage using IoT data
+- Visualizing IoT data
+- Animating a USD stage using IoT data
 
-To enable the IoT Extension in USD Composer or Kit, do the following:
 
-Open the Extensions panel by clicking on **Window** > **Extensions** in the menu and then follow the steps as shown.
-
-![open settings](content/docs/ext_001.png?raw=true)
-
-![map to extension folder](content/docs/ext_002.png?raw=true)
-
-![enabling extension](content/docs/enabling_iot_panel_extension.png?raw=true)
-
-1. **Visualizing IoT data**
+**Visualizing IoT data**
 
 The IoT Extension leverages the Omniverse UI Framework to visualize the IoT data as a panel. [Find out more about the Omniverse UI Framework](https://docs.omniverse.nvidia.com/kit/docs/omni.ui/latest/Overview.html)
 
+1. **Launch Omniverse**
 
-Once you have enabled the IoT extension, you should see IoT data visualized in a Panel.
+Start the application using:
 
-![iot panel](content/docs/iot_panel.png?raw=true)
-
-Alternatively, you can launch your app from the console with this folder added to search path and your extension enabled, e.g.:
-
+**Linux:**
+```bash
+./repo.sh launch
 ```
-> app\omni.code.bat --ext-folder exts --enable omni.iot.sample.panel
+**Windows:**
+```powershell
+.\repo.bat launch
 ```
-2. **Animating a USD stage using IoT data**
 
-In `'USD Composer'` or `Kit`,
+**Select `iot_samples.panel_extension.kit` with arrow keys and press enter**
+
+***NOTE:* The initial startup may take 5 to 8 minutes as shaders compile for the first time. After initial shader compilation, startup time will reduce dramatically**
+
+2. **Load the staage**
+
+In your Omniverse application,
 
 open `omniverse://<nucleus server>/users/<user name>/iot-samples/ConveyorBelt_A08_PR_NVD_01/ConveyorBelt_A08_PR_NVD_01.usd`.
 
-Ensure the IoT Extension is enabled.
+3. **Join the IoT Live session**
 
-Click on the `play` icon on the left toolbar of the USD Composer and the extension will animate to the `Velocity` value change in the IoT data
+See [Joining a Live Session](#joining-a-live-session)
 
-![open settings](content/docs/play_to_animate.png?raw=true)
+4. **Select the Iot Topic**
+
+![iot panel](readme-assets/docs/ext_003.png?raw=true)
+
+
+Click on the `play` icon on the bottom right of the applications's viewport and then start the timeline. The extension will animate to the `Velocity` value change in the IoT data
+
+![show the timeline](readme-assets/docs/play_to_animate.png?raw=true)
+
+![play](readme-assets/docs/start_timeline.png?raw=true)
 
 and then run one of the following:
 
- ```
-    source\ingest_app_csv\run_app.py
-        -u <user name>
-        -p <password>
-        -s <nucleus server> (optional default: localhost)
+**Windows:**
+```powershell
+source\ingest_app_csv\run_app.py
+    -u <user name>
+    -p <password>
+    -s <nucleus server> (optional default: localhost)
 ```
  or
 
- ```
-    source\ingest_app_mqtt\run_app.py
-        -u <user name>
-        -p <password>
-        -s <nucleus server> (optional default: localhost)
+**Windows:**
+```powershell
+source\ingest_app_mqtt\run_app.py
+    -u <user name>
+    -p <password>
+    -s <nucleus server> (optional default: localhost)
 ```
 
 If you are using Environment Variables (see [Using Environment Variables](#using-environment-variables)) then run one of the following:
 
-```
-> python source/ingest_app_csv/run_app.py
+**Windows:**
+```powershell
+python source/ingest_app_csv/run_app.py
 ```
 or
-```
-> python source/ingest_app_mqtt/run_app.py
+
+**Windows:**
+```powershell
+python source/ingest_app_mqtt/run_app.py
 ```
 
 Username and password are for the target Nucleus instance (running on local workstation or on cloud) that you will be connecting to for your IoT projects.
 
  You will see the following animation with the cube moving:
 
-![animation playing](content/docs/animation_playing.png?raw=true)
+![animation playing](readme-assets/docs/animation_playing.png?raw=true)
 
 When the IoT velocity value changes, the extension will animate the rollers (`LiveRoller` class) as well as the cube (`LiveCube` class).
 
@@ -441,7 +470,7 @@ To access the graph:
 
 You should see the following:
 
-![action graph](content/docs/action_graph.png?raw=true)
+![action graph](readme-assets/docs/action_graph.png?raw=true)
 
 The Graph performs the following:
 - Reads the `_ts` attribute from the `/iot/A08_PR_NVD_01` prim.
@@ -455,8 +484,10 @@ The Graph performs the following:
 Sample demonstrates how to execute USD tranformations from a headless connector using arbtriary values.
 
 To execute the application run the the following:
-```
-> python source/transform_geometry/run_app.py
+
+**Windows:**
+```powershell
+python source/transform_geometry/run_app.py
     -u <user name>
     -p <password>
     -s <nucleus server> (optional default: localhost)
@@ -479,33 +510,34 @@ The sample geometry transformation application can be found in `source\transform
 
 If you open `omniverse://<nucleus server>/users/<user name>/iot-samples/Dancing_Cubes.usd` in `Composer` or `Kit`, you should see the following:
 
-![Rotating Cubes](content/docs/cubes.png)
+![Rotating Cubes](readme-assets/docs/cubes.png)
 
 # Joining A Live Session
 
 Here's how-to join a live collaboration session. Click on `Join Session`
 
-![join session](content/docs/join_session.png)
+![join session](readme-assets/docs/join_session.png)
 
 Select `iot-session` from the drop down to join the already created live session.
 
-![joint iot session](content/docs/join_iot_session.png)
+![joint iot session](readme-assets/docs/join_iot_session.png)
 
 # API Key Authentication
 To authenicate the connector application using an API Key, start Nucleus Explore from the Omniverse Launcher application and right click on the server you wish to connect to and select `API Tokens`
 
-![select API Tokens](content/docs/auth_1.png)
+![select API Tokens](readme-assets/docs/auth_1.png)
 
 Provide a token name and click `Create`
 
-![create API Tokens](content/docs/auth_2.png)
+![create API Tokens](readme-assets/docs/auth_2.png)
 
 Copy the token token value and store it somewhere safe.
 
 If you are using the `run_app.py` application launcher you can do the following:
 
-```
-> python source/ingest_app_csv/run_app.py
+**Windows:**
+```powershell
+python source/ingest_app_csv/run_app.py
     -u $omni-api-token
     -p <api token>
     -s <nucleus server> (optional default: localhost)
@@ -513,38 +545,67 @@ If you are using the `run_app.py` application launcher you can do the following:
 
 Or if you are using Environment Variables (see [Using Environment Variables](#using-environment-variables)) you can do the following:
 
-```
-> python source/ingest_app_csv/run_app.py
+**Windows:**
+```powershell
+python source/ingest_app_csv/run_app.py
 ```
 
 # Using Environment Variables
 
 The samples supports Nucleus authentication via Environment Variables.
 
-For Windows Powershell with User Name/Password:
-```powershell
-$Env:OMNI_HOST = "<host name>"
-$Env:OMNI_USER = "<user name>"
-$Env:OMNI_PASS = "<password>"
-```
+Set User Name and Password environment variables:
 
-For Windows Powershell with API Token:
-```powershell
-$Env:OMNI_HOST = "<host name>"
-$Env:OMNI_USER = "`$omni-api-token"
-$Env:OMNI_PASS = "<API Token>"
-```
-
-For Linux Bash with User Name/Password:
+**Linux:**
 ```bash
 export OMNI_HOST=<host name>
 export OMNI_USER=<user name>
 export OMNI_PASS=<password>
 ```
 
-For Linux Bash with API Token:
+**Windows:**
+```powershell
+$Env:OMNI_HOST = "<host name>"
+$Env:OMNI_USER = "<user name>"
+$Env:OMNI_PASS = "<password>"
+```
+
+Set the API Token environment variable:
+
+**Linux:**
 ```bash
 export OMNI_HOST=<host name>
 export OMNI_USER=\$omni-api-token
 export OMNI_PASS=<API Token>
 ```
+
+**Windows:**
+```powershell
+$Env:OMNI_HOST = "<host name>"
+$Env:OMNI_USER = "`$omni-api-token"
+$Env:OMNI_PASS = "<API Token>"
+```
+
+## License
+
+Development using the Omniverse Kit SDK is subject to the licensing terms detailed [here](https://docs.omniverse.nvidia.com/dev-guide/latest/common/NVIDIA_Omniverse_License_Agreement.html).
+
+## Data Collection
+The Omniverse Kit SDK collects anonymous usage data to help improve software performance and aid in diagnostic purposes. Rest assured, no personal information such as user email, name or any other field is collected.
+
+To learn more about what data is collected, how we use it and how you can change the data collection setting [see details page](readme-assets/additional-docs/data_collection_and_use.md).
+
+## Additional Resources
+
+- [Kit App Template Companion Tutorial](https://docs.omniverse.nvidia.com/kit/docs/kit-app-template/latest/docs/intro.html)
+
+- [Usage and Troubleshooting](readme-assets/additional-docs/usage_and_troubleshooting.md)
+
+- [BETA - Developer Bundle Extensions](readme-assets/additional-docs/developer_bundle_extensions.md)
+
+- [Omniverse Kit SDK Manual](https://docs.omniverse.nvidia.com/kit/docs/kit-manual/latest/index.html)
+
+
+## Contributing
+
+We provide this source code as-is and are currently not accepting outside contributions.
